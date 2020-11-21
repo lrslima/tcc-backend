@@ -35,7 +35,7 @@ namespace Condolencia
             });
 
             services.AddDbContext<CondolenciaContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("CondolenciaContext")));
+                    options.UseMySql(Configuration.GetConnectionString("CondolenciaContext")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
