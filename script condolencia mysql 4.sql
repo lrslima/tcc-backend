@@ -84,3 +84,17 @@ CREATE TABLE `Vitima` (
 
 INSERT INTO `__EFMigrationsHistory` (`MigrationId`, `ProductVersion`)
 VALUES ('20201121183834_InitialCreate', '3.1.10');
+
+INSERT INTO `Status` (`Id`, `Descricao`, `Ativo`) VALUES (NULL, 'Pendente', '1');
+INSERT INTO `Status` (`Id`, `Descricao`, `Ativo`) VALUES (NULL, 'Aprovado', '1');
+INSERT INTO `Status` (`Id`, `Descricao`, `Ativo`) VALUES (NULL, 'Reprovado', '1');
+
+INSERT INTO `Sentimento` (`Id`, `Descricao`, `Ativo`) VALUES (NULL, 'Saudades', '1');
+INSERT INTO `Sentimento` (`Id`, `Descricao`, `Ativo`) VALUES (NULL, 'Inconformismo', '1');
+INSERT INTO `Sentimento` (`Id`, `Descricao`, `Ativo`) VALUES (NULL, 'Fé', '1');
+INSERT INTO `Sentimento` (`Id`, `Descricao`, `Ativo`) VALUES (NULL, 'Esperança', '1');
+
+INSERT INTO `Privacidade` (`Id`, `Descricao`, `Ativo`) VALUES (NULL, 'Sigilosa', '1');
+INSERT INTO `Privacidade` (`Id`, `Descricao`, `Ativo`) VALUES (NULL, 'Sigilosa - Somente o texto será colocado na cápsula do tempo sem identificação de sua autoria', '1');
+INSERT INTO `Privacidade` (`Id`, `Descricao`, `Ativo`) VALUES (NULL, 'Parcialmente pública - Será relevado o seu conteúdo e autoria daqui dez anos', '1');
+INSERT INTO `Privacidade` (`Id`, `Descricao`, `Ativo`) VALUES (NULL, 'Pública - Constará no blog do projeto em memória das vítimas do COVID-19', '1');

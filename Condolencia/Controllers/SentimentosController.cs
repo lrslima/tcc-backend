@@ -12,23 +12,23 @@ namespace Condolencia.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SentimentoesController : ControllerBase
+    public class SentimentosController : ControllerBase
     {
         private readonly CondolenciaContext _context;
 
-        public SentimentoesController(CondolenciaContext context)
+        public SentimentosController(CondolenciaContext context)
         {
             _context = context;
         }
 
-        // GET: api/Sentimentoes
+        // GET: api/Sentimentos
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Sentimento>>> GetSentimento()
         {
             return await _context.Sentimento.ToListAsync();
         }
 
-        // GET: api/Sentimentoes/5
+        // GET: api/Sentimentos/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Sentimento>> GetSentimento(int id)
         {
@@ -42,7 +42,7 @@ namespace Condolencia.Controllers
             return sentimento;
         }
 
-        // PUT: api/Sentimentoes/5
+        // PUT: api/Sentimentos/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutSentimento(int id, Sentimento sentimento)
@@ -73,7 +73,7 @@ namespace Condolencia.Controllers
             return NoContent();
         }
 
-        // POST: api/Sentimentoes
+        // POST: api/Sentimentos
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Sentimento>> PostSentimento(Sentimento sentimento)
@@ -84,7 +84,7 @@ namespace Condolencia.Controllers
             return CreatedAtAction("GetSentimento", new { id = sentimento.Id }, sentimento);
         }
 
-        // DELETE: api/Sentimentoes/5
+        // DELETE: api/Sentimentos/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteSentimento(int id)
         {
