@@ -12,6 +12,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Condolencia.Data;
+using Condolencia.DTO;
+using Condolencia.Interfaces;
+using Condolencia.Services;
 
 namespace Condolencia
 {
@@ -27,6 +30,9 @@ namespace Condolencia
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
+            services.AddScoped<IEmailService, EmailService>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
