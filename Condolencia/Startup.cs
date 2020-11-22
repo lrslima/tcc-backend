@@ -41,7 +41,7 @@ namespace Condolencia
             });
 
             services.AddDbContext<CondolenciaContext>(options =>
-                    options.UseMySql(Configuration.GetConnectionString("CondolenciaContext")));
+                    options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,9 +50,10 @@ namespace Condolencia
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Condolencia v1"));
             }
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Condolencia v1"));
 
             app.UseRouting();
 
