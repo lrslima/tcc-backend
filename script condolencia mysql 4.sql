@@ -12,7 +12,7 @@ CREATE TABLE `Mensagem` (
     `Status` VARCHAR(255) NULL,
     `Sentimento` VARCHAR(255) NULL,
     `Privacidade` VARCHAR(255) NULL,
-    `QrCode` BIGINT NOT NULL,
+    `QrCode` LONGBLOB NULL,
     `DataCriacao` DATE NOT NULL,
     CONSTRAINT `PK_Mensagem` PRIMARY KEY (`Id`)
 );

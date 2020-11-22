@@ -35,8 +35,8 @@ namespace Condolencia.Migrations
                     b.Property<string>("Privacidade")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("QrCode")
-                        .HasColumnType("bigint");
+                    b.Property<byte[]>("QrCode")
+                        .HasColumnType("longblob");
 
                     b.Property<string>("Sentimento")
                         .HasColumnType("nvarchar(max)");

@@ -19,7 +19,7 @@ namespace Condolencia.Migrations
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Sentimento = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Privacidade = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    QrCode = table.Column<long>(type: "bigint", nullable: false)
+                    QrCode = table.Column<byte[]>(type: "longblob", nullable: true)
                 },
                 constraints: table =>
                 {
