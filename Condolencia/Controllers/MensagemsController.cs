@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Condolencia.Data;
 using Condolencia.Models;
+using Condolencia.DTOs;
+using Condolencia.Services;
 
 namespace Condolencia.Controllers
 {
@@ -15,7 +17,7 @@ namespace Condolencia.Controllers
     public class MensagemsController : ControllerBase
     {
         private readonly CondolenciaContext _context;
-
+        private readonly MensagemService _mensagemService;
         public MensagemsController(CondolenciaContext context)
         {
             _context = context;
@@ -73,8 +75,26 @@ namespace Condolencia.Controllers
             return NoContent();
         }
 
-        // POST: api/Mensagems
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+
+        //Exemplo POST
+        //[HttpPost]
+        //public async Task<ActionResult<Mensagem>> PostMensagem([FromBody] PublicarMensagem publicarMensagem)
+        //{
+
+        //    var mensagem = _mensagemService.
+
+        //    _context.Mensagem.Add(mensagem);
+        //    await _context.SaveChangesAsync();
+
+        //    return CreatedAtAction("GetMensagem", new { id = mensagem.Id }, mensagem);
+        //}
+
+        //Exemplo GET
+        //[HttpGet]
+        //[Route(mensagem/{id})]
+        //public async Task<ActionResult<Mensagem>> GetMensagemById(int id)
+
+
         [HttpPost]
         public async Task<ActionResult<Mensagem>> PostMensagem(Mensagem mensagem)
         {
