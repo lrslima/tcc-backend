@@ -3,14 +3,16 @@ using System;
 using Condolencia.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Condolencia.Migrations
 {
     [DbContext(typeof(CondolenciaContext))]
-    partial class CondolenciaContextModelSnapshot : ModelSnapshot
+    [Migration("20201125015139_removido_alterado_por")]
+    partial class removido_alterado_por
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

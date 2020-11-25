@@ -14,6 +14,8 @@ namespace Condolencia.DTOs
         public string status { get; set; }
         public string texto { get; set; }
         public bool politica_privacidade { get; set; }
+
+        public int privacidade { get; set; }
         
         public PessoaViewModel Pessoa { get; set; }
 

@@ -30,7 +30,9 @@ namespace Condolencia.Models
 
         public string Sentimento { get; set; }
 
-        public string Privacidade { get; set; }
+        public int Privacidade { get; set; }
+
+        public bool PoliticaPrivacidade { get; set; }
 
         public Byte[] QrCode { get; set; }
 

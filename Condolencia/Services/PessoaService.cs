@@ -1,5 +1,6 @@
 ﻿using Condolencia.Data;
 using Condolencia.DTOs;
+using Condolencia.Interfaces;
 using Condolencia.Models;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Condolencia.Services
 {
-    public class PessoaService
+    public class PessoaService : IPessoaService
     {
         private readonly CondolenciaContext _context;
 
@@ -17,17 +18,28 @@ namespace Condolencia.Services
             _context = context;
         }
 
-        public Task<bool> SalvaPessoa(PublicarMensagem publicarMensagem)
+        public async Task<int> CadastrarPessoa(PessoaViewModel pessoaViewModel)
         {
+            try
+            {
 
-            Pessoa pessoa = new Pessoa();
-            pessoa = publicarMensagem.Pessoa;
 
-            _context.Add(pessoa);
-            _context.SaveChanges();
-  
-            return Task.FromResult(true);
+                Pessoa pessoa = new Pessoa();
+                pessoa.Nome = pessoaViewModel.nome;
+                pessoa.SobreNome = pessoaViewModel.sobrenome;
+                pessoa.CPF = pessoaViewModel.cpf;
+                pessoa.RG = pessoaViewModel.rg;
+                pessoa.Email = pessoaViewModel.email;
 
+                _context.Add(pessoa);
+                _context.SaveChanges();
+
+                return await Task.FromResult(pessoa.Id);
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }

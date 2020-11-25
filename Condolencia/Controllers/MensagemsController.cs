@@ -9,6 +9,7 @@ using Condolencia.Data;
 using Condolencia.Models;
 using Condolencia.DTOs;
 using Condolencia.Services;
+using Condolencia.Interfaces;
 
 namespace Condolencia.Controllers
 {
@@ -17,17 +18,11 @@ namespace Condolencia.Controllers
     public class MensagemsController : ControllerBase
     {
         private readonly CondolenciaContext _context;
-        private readonly MensagemService _mensagemService;
-        public MensagemsController(CondolenciaContext context)
+        private readonly IMensagemService _mensagemService;
+        public MensagemsController(CondolenciaContext context, IMensagemService mensagemService)
         {
             _context = context;
-        }
-
-        // GET: api/Mensagems
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Mensagem>>> GetMensagem()
-        {
-            return await _context.Mensagem.ToListAsync();
+            _mensagemService = mensagemService;
         }
 
         // GET: api/Mensagems/5
@@ -76,32 +71,22 @@ namespace Condolencia.Controllers
         }
 
 
-        //Exemplo POST
-        //[HttpPost]
-        //public async Task<ActionResult<Mensagem>> PostMensagem([FromBody] PublicarMensagem publicarMensagem)
-        //{
-
-        //    var mensagem = _mensagemService.
-
-        //    _context.Mensagem.Add(mensagem);
-        //    await _context.SaveChangesAsync();
-
-        //    return CreatedAtAction("GetMensagem", new { id = mensagem.Id }, mensagem);
-        //}
-
-        //Exemplo GET
-        //[HttpGet]
-        //[Route(mensagem/{id})]
-        //public async Task<ActionResult<Mensagem>> GetMensagemById(int id)
-
-
         [HttpPost]
-        public async Task<ActionResult<Mensagem>> PostMensagem(Mensagem mensagem)
+        [Produces("application/json")]
+        public async Task<ActionResult<Mensagem>> PostMensagem([FromBody] MensagemRegistrar publicarMensagem)
         {
-            _context.Mensagem.Add(mensagem);
-            await _context.SaveChangesAsync();
+            var result = await _mensagemService.RegistrarMensagem(publicarMensagem);
 
-            return CreatedAtAction("GetMensagem", new { id = mensagem.Id }, mensagem);
+            return result;
+        }
+
+        [HttpGet]
+        [Produces("application/json")]
+        public async Task<ActionResult<List<MensagemRegistrar>>> GetMensagens()
+        {
+            var result = await _mensagemService.GetAllMensagens();
+
+            return result;
         }
 
         // DELETE: api/Mensagems/5

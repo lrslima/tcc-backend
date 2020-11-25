@@ -3,14 +3,16 @@ using System;
 using Condolencia.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Condolencia.Migrations
 {
     [DbContext(typeof(CondolenciaContext))]
-    partial class CondolenciaContextModelSnapshot : ModelSnapshot
+    [Migration("20201125014931_politica_privacidade")]
+    partial class politica_privacidade
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -65,6 +67,9 @@ namespace Condolencia.Migrations
 
                     b.Property<DateTime>("DataAcao")
                         .HasColumnType("datetime(6)");
+
+                    b.Property<int>("IdAlteradoPor")
+                        .HasColumnType("int");
 
                     b.Property<int>("IdMensagem")
                         .HasColumnType("int");
