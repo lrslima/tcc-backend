@@ -32,6 +32,8 @@ namespace Condolencia.Models
 
         public string Privacidade { get; set; }
 
-        public long QrCode { get; set; }
+        public Byte[] QrCode { get; set; }
+
+        public DateTime DataCriacao { get; set; }
     }
 }

@@ -19,6 +19,6 @@ namespace Condolencia.Models
         public string Rua { get; set; }
         public string Cidade { get; set; }
         public string Estado { get; set; }
-        public string Fotografia { get; set; }
+        public Byte[] Fotografia { get; set; }
     }
 }

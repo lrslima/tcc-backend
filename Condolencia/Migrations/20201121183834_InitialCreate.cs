@@ -19,7 +19,7 @@ namespace Condolencia.Migrations
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Sentimento = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Privacidade = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    QrCode = table.Column<long>(type: "bigint", nullable: false)
+                    QrCode = table.Column<Byte[]>(type: "longblob", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -131,7 +131,7 @@ namespace Condolencia.Migrations
                     Rua = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Cidade = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Estado = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Fotografia = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Fotografia = table.Column<Byte[]>(type: "longblob", nullable: true)
                 },
                 constraints: table =>
                 {

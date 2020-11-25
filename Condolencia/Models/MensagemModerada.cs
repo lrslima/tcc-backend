@@ -20,5 +20,7 @@ namespace Condolencia.Models
         
         [Required]
         public string Status { get; set; }
+
+        public int IdAlteradoPor { get; set; }
     }
 }
