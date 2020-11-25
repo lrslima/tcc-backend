@@ -35,7 +35,8 @@ namespace Condolencia
             services.AddScoped<IMensagemService, MensagemService>();
             services.AddScoped<IPessoaService, PessoaService>();
             services.AddScoped<IVitimaService, VitimaService>();
-
+            services.AddScoped<IUsuarioService, UsuarioService>();
+            services.AddScoped<IMensagemModeradaService, MensagemModeradaService>();
             services.AddScoped<IEmailService, EmailService>();
 
             services.AddControllers();
@@ -45,7 +46,7 @@ namespace Condolencia
             });
 
             services.AddDbContext<CondolenciaContext>(options =>
-                    options.UseMySql(Configuration.GetConnectionString("CondolenciaContext")));
+                    options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
