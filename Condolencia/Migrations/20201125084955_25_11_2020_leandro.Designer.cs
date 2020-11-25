@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Condolencia.Migrations
 {
     [DbContext(typeof(CondolenciaContext))]
-    [Migration("20201125014931_politica_privacidade")]
-    partial class politica_privacidade
+    [Migration("20201125084955_25_11_2020_leandro")]
+    partial class _25_11_2020_leandro
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -197,6 +197,9 @@ namespace Condolencia.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(100) CHARACTER SET utf8mb4")
                         .HasMaxLength(100);
+
+                    b.Property<int>("TipoUsuario")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

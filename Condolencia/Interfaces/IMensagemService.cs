@@ -11,7 +11,7 @@ namespace Condolencia.Interfaces
     {
         Task<Mensagem> RegistrarMensagem(MensagemRegistrar mensagemViewModel);
         
-        void AlterarStatus(StatusMensagemViewModel statusViewModel, MensagemRegistrar mensagemViewModel);
+        void AlterarStatus(MensagemModeradaViewModel mensagemModeradaViewModel);
 
         Task<List<MensagemRegistrar>> GetAllMensagens();
         

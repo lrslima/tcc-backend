@@ -1,4 +1,6 @@
-﻿using Condolencia.Data;
+﻿using Condolencia.Services;
+using Microsoft.AspNetCore.Mvc;
+using Condolencia.Data;
 using Condolencia.DTOs;
 using Condolencia.Interfaces;
 using Condolencia.Models;
@@ -16,6 +18,7 @@ namespace Condolencia.Services
         private readonly IPessoaService _pessoaService;
         private readonly IVitimaService _vitimaService;
         private readonly IEmailService _emailService;
+        private readonly IMensagemModeradaService _mensagemModeradaService;
 
         public MensagemService(CondolenciaContext condolenciaContext, IPessoaService pessoaService, IVitimaService vitimaService, IEmailService emailService)
         {
@@ -37,7 +40,7 @@ namespace Condolencia.Services
                 mensagem.IdPessoa = idPessoa;
                 mensagem.IdVitima = idVitima;
                 mensagem.Texto = mensagemViewModel.texto;
-                mensagem.Status = "pendente";
+                mensagem.Status = "Pendente";
                 mensagem.Sentimento = mensagemViewModel.Pessoa.sentimento;
                 mensagem.Privacidade = mensagemViewModel.privacidade;
                 mensagem.PoliticaPrivacidade = mensagemViewModel.politica_privacidade;
@@ -56,15 +59,38 @@ namespace Condolencia.Services
 
         }
 
-        public async void AlterarStatus(StatusMensagemViewModel statusViewModel, MensagemRegistrar mensagemViewModel)
+        public async void AlterarStatus(MensagemModeradaViewModel mensagemModeradaViewModel)
         {
             try
             {
+                string assunto = "Mensagem reprovada pelo moderador";
                 // incluir moderção na tabela de moderação ------ var idModeracao = await _ModeracaoMensagemService.AlterarStatus(statusViewModel.Status);
+                var Moderacao = await _mensagemModeradaService.CadastrarModeracao(mensagemModeradaViewModel);
+
                 // Verificar se Aprovado gerar o QR code
+                string stringBase64 = string.Empty;
+                Byte[] imagem = null;
+                if (mensagemModeradaViewModel.Status.Trim().Equals("Aprovado", StringComparison.OrdinalIgnoreCase))
+                {
+                    assunto = "Mensagem aprovada pelo moderador";
+                    imagem = QRCodeService.GenerateByteArray($"https://avarc.vercel.app");
+                    stringBase64 = Convert.ToBase64String(imagem);
+                }
+                
                 // alterar status e incluir o QR code na tabela mensagem 
+                var mensagem = await _condolenciaContext.Mensagem.FindAsync(mensagemModeradaViewModel.IdMensagem);
+                mensagem.Status = mensagemModeradaViewModel.Status;
+                mensagem.QrCode = imagem;
+
+                _condolenciaContext.Add(mensagem);
+                _condolenciaContext.SaveChanges();
+
+                //return await Task.FromResult(mensagem);
+
                 // Formatar o corpo do e-mail ??? aqui ou no método de envio de e-mail
                 // Enviar mensagem
+                var pessoa = await _condolenciaContext.Pessoa.FindAsync(mensagem.IdPessoa);
+                await _emailService.SendEmailAsync(pessoa.Email, assunto, "teste");
             }
             catch (Exception ex)
             {

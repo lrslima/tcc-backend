@@ -42,5 +42,7 @@ namespace Condolencia.Models
         [Compare("Senha", ErrorMessage = "Senhas digitadas não são iguais, verifique.")]
         public string ConfirmarSenha { get; set; }
 
+        public int TipoUsuario { get; set; }
+
     }
 }

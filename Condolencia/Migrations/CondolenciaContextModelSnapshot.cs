@@ -66,6 +66,9 @@ namespace Condolencia.Migrations
                     b.Property<DateTime>("DataAcao")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<int>("IdAlteradoPor")
+                        .HasColumnType("int");
+
                     b.Property<int>("IdMensagem")
                         .HasColumnType("int");
 
@@ -192,6 +195,9 @@ namespace Condolencia.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(100) CHARACTER SET utf8mb4")
                         .HasMaxLength(100);
+
+                    b.Property<int>("TipoUsuario")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

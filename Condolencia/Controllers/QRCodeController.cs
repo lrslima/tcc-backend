@@ -18,7 +18,7 @@ namespace Condolencia.Controllers
         [HttpGet("qrcode")]
         public IActionResult GetQrCode()
         {
-            var image = QRCodeService.GenerateByteArray($"www.uol.com.br");
+            var image = QRCodeService.GenerateByteArray($"https://avarc.vercel.app");
             return File(image, "image/jpeg");
         }
     }
