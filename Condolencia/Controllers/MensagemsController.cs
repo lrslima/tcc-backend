@@ -26,17 +26,31 @@ namespace Condolencia.Controllers
         }
 
         // GET: api/Mensagems/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Mensagem>> GetMensagem(int id)
-        {
-            var mensagem = await _context.Mensagem.FindAsync(id);
+        //[HttpGet("{id}")]
+        //public async Task<ActionResult<Mensagem>> GetMensagem(int id)
+        //{
+        //    var mensagem = await _context.Mensagem.FindAsync(id);
+        //
+        //    if (mensagem == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            if (mensagem == null)
+        //    return mensagem;
+        //}
+        // GET: api/Mensagems/5
+        
+        [HttpGet("{id}")]
+        public async Task<ActionResult<List<MensagemRegistrar>>> GetMensagem(int id)
+        {
+            var result = await _mensagemService.GetMensagem(id);
+
+            if (result == null)
             {
                 return NotFound();
             }
 
-            return mensagem;
+            return result;
         }
 
         // PUT: api/Mensagems/5
@@ -73,11 +87,11 @@ namespace Condolencia.Controllers
 
         [HttpPost]
         [Produces("application/json")]
-        public async Task<ActionResult<Mensagem>> PostMensagem([FromBody] MensagemRegistrar publicarMensagem)
+        public async Task<ActionResult<List<MensagemRegistrar>>> PostMensagem([FromBody] MensagemRegistrar publicarMensagem)
         {
             var result = await _mensagemService.RegistrarMensagem(publicarMensagem);
-
-            return result;
+            var modelJson = await _mensagemService.GetMensagem(result.Id);
+            return modelJson;
         }
 
         [HttpGet]
