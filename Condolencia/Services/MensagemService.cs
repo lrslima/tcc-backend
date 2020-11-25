@@ -15,12 +15,14 @@ namespace Condolencia.Services
         private readonly CondolenciaContext _condolenciaContext;
         private readonly IPessoaService _pessoaService;
         private readonly IVitimaService _vitimaService;
+        private readonly IEmailService _emailService;
 
-        public MensagemService(CondolenciaContext condolenciaContext, IPessoaService pessoaService, IVitimaService vitimaService)
+        public MensagemService(CondolenciaContext condolenciaContext, IPessoaService pessoaService, IVitimaService vitimaService, IEmailService emailService)
         {
             _condolenciaContext = condolenciaContext;
             _pessoaService = pessoaService;
             _vitimaService = vitimaService;
+            _emailService = emailService;
         }
 
         public async Task<List<MensagemRegistrar>> GetAllMensagens()
@@ -98,5 +100,15 @@ namespace Condolencia.Services
             }
 
         }
+
+
+        ///exemplo
+        //método de alterar status
+        //public async void AlterarStatus(MensagemRegistrar mensagemViewModel)
+        //{
+
+        //    //chamada do metodo de email
+        //    await _emailService.SendEmailAsync(mensagemViewModel.Pessoa.email, "teste", "teste");
+        //}
     }
 }
