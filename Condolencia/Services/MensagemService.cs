@@ -25,49 +25,6 @@ namespace Condolencia.Services
             _emailService = emailService;
         }
 
-        public async Task<List<MensagemRegistrar>> GetAllMensagens()
-        {
-            try
-            {
-               var listMensagens = (from mensagem in _condolenciaContext.Mensagem
-                            from pessoa in _condolenciaContext.Pessoa
-                            from vitima in _condolenciaContext.Vitima
-                            select new MensagemRegistrar
-                            {
-                                status = mensagem.Status,
-                                texto = mensagem.Texto,
-                                politica_privacidade = mensagem.PoliticaPrivacidade,
-                                privacidade = mensagem.Privacidade,
-                                Pessoa = new PessoaViewModel
-                                {
-                                    nome = pessoa.Nome,
-                                    sobrenome = pessoa.SobreNome,
-                                    cpf = pessoa.CPF,
-                                    rg = pessoa.RG,
-                                    email = pessoa.Email,
-                                    sentimento = mensagem.Sentimento
-                                },
-                                Vitima = new VitimaViewModel
-                                {
-                                    nome = vitima.Nome,
-                                    sobrenome = vitima.SobreNome,
-                                    cpf = vitima.CPF,
-                                    rg = vitima.RG,
-                                    endereco_rua = vitima.Rua,
-                                    endereco_cidade = vitima.Cidade,
-                                    endereco_estado = vitima.Estado,
-                                    imagem = vitima.Fotografia
-                                }
-                            }).ToList();
-
-                return await Task.FromResult(listMensagens);
-            }
-            catch(Exception ex)
-            {
-                throw ex;
-            }
-        }
-
         public async Task<Mensagem> RegistrarMensagem(MensagemRegistrar mensagemViewModel)
         {
             try
@@ -90,8 +47,6 @@ namespace Condolencia.Services
                 _condolenciaContext.Add(mensagem);
                 _condolenciaContext.SaveChanges();
 
-                //var myEntity = _condolenciaContext.Mensagem.Find(mensagem);
-
                 return await Task.FromResult(mensagem);
             }
             catch(Exception ex)
@@ -101,6 +56,21 @@ namespace Condolencia.Services
 
         }
 
+        public async void AlterarStatus(StatusMensagemViewModel statusViewModel, MensagemRegistrar mensagemViewModel)
+        {
+            try
+            {
+                // incluir moderção na tabela de moderação ------ var idModeracao = await _ModeracaoMensagemService.AlterarStatus(statusViewModel.Status);
+                // Verificar se Aprovado gerar o QR code
+                // alterar status e incluir o QR code na tabela mensagem 
+                // Formatar o corpo do e-mail ??? aqui ou no método de envio de e-mail
+                // Enviar mensagem
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
 
         ///exemplo
         //método de alterar status
@@ -110,5 +80,93 @@ namespace Condolencia.Services
         //    //chamada do metodo de email
         //    await _emailService.SendEmailAsync(mensagemViewModel.Pessoa.email, "teste", "teste");
         //}
+
+
+        public async Task<List<MensagemRegistrar>> GetAllMensagens()
+        {
+            try
+            {
+                var listMensagens = (from mensagem in _condolenciaContext.Mensagem
+                                     from pessoa in _condolenciaContext.Pessoa
+                                     from vitima in _condolenciaContext.Vitima
+                                     select new MensagemRegistrar
+                                     {
+                                         status = mensagem.Status,
+                                         texto = mensagem.Texto,
+                                         politica_privacidade = mensagem.PoliticaPrivacidade,
+                                         privacidade = mensagem.Privacidade,
+                                         Pessoa = new PessoaViewModel
+                                         {
+                                             nome = pessoa.Nome,
+                                             sobrenome = pessoa.SobreNome,
+                                             cpf = pessoa.CPF,
+                                             rg = pessoa.RG,
+                                             email = pessoa.Email,
+                                             sentimento = mensagem.Sentimento
+                                         },
+                                         Vitima = new VitimaViewModel
+                                         {
+                                             nome = vitima.Nome,
+                                             sobrenome = vitima.SobreNome,
+                                             cpf = vitima.CPF,
+                                             rg = vitima.RG,
+                                             endereco_rua = vitima.Rua,
+                                             endereco_cidade = vitima.Cidade,
+                                             endereco_estado = vitima.Estado,
+                                             imagem = vitima.Fotografia
+                                         }
+                                     }).ToList();
+
+                return await Task.FromResult(listMensagens);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<List<MensagemRegistrar>> GetMensagem(int idMensagem)
+        {
+            try
+            {
+                var listMensagem = (from mensagem in _condolenciaContext.Mensagem
+                                    from pessoa in _condolenciaContext.Pessoa
+                                    from vitima in _condolenciaContext.Vitima
+                                    select new MensagemRegistrar
+                                    {
+                                        Id = mensagem.Id,
+                                        status = mensagem.Status,
+                                        texto = mensagem.Texto,
+                                        politica_privacidade = mensagem.PoliticaPrivacidade,
+                                        privacidade = mensagem.Privacidade,
+                                        Pessoa = new PessoaViewModel
+                                        {
+                                            nome = pessoa.Nome,
+                                            sobrenome = pessoa.SobreNome,
+                                            cpf = pessoa.CPF,
+                                            rg = pessoa.RG,
+                                            email = pessoa.Email,
+                                            sentimento = mensagem.Sentimento
+                                        },
+                                        Vitima = new VitimaViewModel
+                                        {
+                                            nome = vitima.Nome,
+                                            sobrenome = vitima.SobreNome,
+                                            cpf = vitima.CPF,
+                                            rg = vitima.RG,
+                                            endereco_rua = vitima.Rua,
+                                            endereco_cidade = vitima.Cidade,
+                                            endereco_estado = vitima.Estado,
+                                            imagem = vitima.Fotografia
+                                        }
+                                    }).Where(i => i.Id == idMensagem).ToList();
+
+                return await Task.FromResult(listMensagem);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

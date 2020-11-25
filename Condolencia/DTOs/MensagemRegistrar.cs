@@ -11,8 +11,12 @@ namespace Condolencia.DTOs
 {
     public class MensagemRegistrar
     {
+        public int Id { get; set; }
+        
         public string status { get; set; }
+        
         public string texto { get; set; }
+        
         public bool politica_privacidade { get; set; }
 
         public int privacidade { get; set; }

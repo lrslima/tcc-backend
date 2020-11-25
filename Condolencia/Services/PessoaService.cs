@@ -22,8 +22,6 @@ namespace Condolencia.Services
         {
             try
             {
-
-
                 Pessoa pessoa = new Pessoa();
                 pessoa.Nome = pessoaViewModel.nome;
                 pessoa.SobreNome = pessoaViewModel.sobrenome;
@@ -36,7 +34,7 @@ namespace Condolencia.Services
 
                 return await Task.FromResult(pessoa.Id);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
