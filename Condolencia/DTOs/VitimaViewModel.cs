@@ -7,6 +7,7 @@ namespace Condolencia.DTOs
 {
     public class VitimaViewModel
     {
+        public int id { get; set; }
         public string nome { get; set; }
         public string sobrenome { get; set; }
         public string cpf { get; set; }

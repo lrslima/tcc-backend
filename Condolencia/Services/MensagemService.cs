@@ -110,10 +110,11 @@ namespace Condolencia.Services
             try
             {
                 var listMensagens = (from mensagem in _condolenciaContext.Mensagem
-                                     from pessoa in _condolenciaContext.Pessoa
-                                     from vitima in _condolenciaContext.Vitima
+                                     join pessoa in _condolenciaContext.Pessoa on mensagem.IdPessoa equals pessoa.Id
+                                     join vitima in _condolenciaContext.Vitima on mensagem.IdVitima equals vitima.Id
                                      select new MensagemRegistrar
                                      {
+                                         Id = mensagem.Id,
                                          status = mensagem.Status,
                                          texto = mensagem.Texto,
                                          politica_privacidade = mensagem.PoliticaPrivacidade,
@@ -121,6 +122,7 @@ namespace Condolencia.Services
                                          Data = mensagem.DataCriacao,
                                          Pessoa = new PessoaViewModel
                                          {
+                                             id = pessoa.Id,
                                              nome = pessoa.Nome,
                                              sobrenome = pessoa.SobreNome,
                                              cpf = pessoa.CPF,
@@ -130,6 +132,7 @@ namespace Condolencia.Services
                                          },
                                          Vitima = new VitimaViewModel
                                          {
+                                             id = vitima.Id,
                                              nome = vitima.Nome,
                                              sobrenome = vitima.SobreNome,
                                              cpf = vitima.CPF,
@@ -154,8 +157,8 @@ namespace Condolencia.Services
             try
             {
                 var result = (from mensagem in _condolenciaContext.Mensagem
-                                    from pessoa in _condolenciaContext.Pessoa
-                                    from vitima in _condolenciaContext.Vitima
+                                    join pessoa in _condolenciaContext.Pessoa on mensagem.IdPessoa equals pessoa.Id
+                                    join vitima in _condolenciaContext.Vitima on mensagem.IdVitima equals vitima.Id
                                     select new MensagemRegistrar
                                     {
                                         Id = mensagem.Id,
@@ -166,6 +169,7 @@ namespace Condolencia.Services
                                         Data = mensagem.DataCriacao,
                                         Pessoa = new PessoaViewModel
                                         {
+                                            id = pessoa.Id,
                                             nome = pessoa.Nome,
                                             sobrenome = pessoa.SobreNome,
                                             cpf = pessoa.CPF,
@@ -175,6 +179,7 @@ namespace Condolencia.Services
                                         },
                                         Vitima = new VitimaViewModel
                                         {
+                                            id = vitima.Id,
                                             nome = vitima.Nome,
                                             sobrenome = vitima.SobreNome,
                                             cpf = vitima.CPF,
@@ -187,6 +192,52 @@ namespace Condolencia.Services
                                     }).Where(i => i.Id == idMensagem).ToList().FirstOrDefault();
 
                 return await Task.FromResult(result);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<List<MensagemRegistrar>> GetMensagemByStatus(string status)
+        {
+            try
+            {
+                var listMensagem = (from mensagem in _condolenciaContext.Mensagem
+                                    join pessoa in _condolenciaContext.Pessoa on mensagem.IdPessoa equals pessoa.Id
+                                    join vitima in _condolenciaContext.Vitima on mensagem.IdVitima equals vitima.Id
+                                    select new MensagemRegistrar
+                                    {
+                                        Id = mensagem.Id,
+                                        status = mensagem.Status,
+                                        texto = mensagem.Texto,
+                                        politica_privacidade = mensagem.PoliticaPrivacidade,
+                                        privacidade = mensagem.Privacidade,
+                                        Pessoa = new PessoaViewModel
+                                        {
+                                            id = pessoa.Id,
+                                            nome = pessoa.Nome,
+                                            sobrenome = pessoa.SobreNome,
+                                            cpf = pessoa.CPF,
+                                            rg = pessoa.RG,
+                                            email = pessoa.Email,
+                                            sentimento = mensagem.Sentimento
+                                        },
+                                        Vitima = new VitimaViewModel
+                                        {
+                                            id = vitima.Id,
+                                            nome = vitima.Nome,
+                                            sobrenome = vitima.SobreNome,
+                                            cpf = vitima.CPF,
+                                            rg = vitima.RG,
+                                            endereco_rua = vitima.Rua,
+                                            endereco_cidade = vitima.Cidade,
+                                            endereco_estado = vitima.Estado,
+                                            imagem = vitima.Fotografia
+                                        }
+                                    }).Where(i => i.status == status).ToList();
+
+                return await Task.FromResult(listMensagem);
             }
             catch (Exception ex)
             {
