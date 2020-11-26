@@ -71,7 +71,7 @@ namespace Condolencia.Controllers
 
         [HttpPost]
         [Produces("application/json")]
-        public async Task<ActionResult<List<MensagemRegistrar>>> PostMensagem([FromBody] MensagemRegistrar publicarMensagem)
+        public async Task<ActionResult<MensagemRegistrar>> PostMensagem([FromBody] MensagemRegistrar publicarMensagem)
         {
             var result = await _mensagemService.RegistrarMensagem(publicarMensagem);
 

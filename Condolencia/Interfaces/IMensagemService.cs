@@ -9,7 +9,7 @@ namespace Condolencia.Interfaces
 {
     public interface IMensagemService
     {
-        Task<Mensagem> RegistrarMensagem(MensagemRegistrar mensagemViewModel);
+        Task<MensagemRegistrar> RegistrarMensagem(MensagemRegistrar mensagemViewModel);
         
         Task<MensagemRegistrar> AlterarStatus(MensagemModeradaViewModel mensagemModerada);
 

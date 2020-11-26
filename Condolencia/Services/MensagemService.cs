@@ -29,7 +29,7 @@ namespace Condolencia.Services
             _mensagemModeradaService = mensagemModeradaService;
     }
 
-    public async Task<Mensagem> RegistrarMensagem(MensagemRegistrar mensagemViewModel)
+    public async Task<MensagemRegistrar> RegistrarMensagem(MensagemRegistrar mensagemViewModel)
         {
             try
             {
@@ -51,7 +51,8 @@ namespace Condolencia.Services
                 _condolenciaContext.Add(mensagem);
                 _condolenciaContext.SaveChanges();
 
-                return await Task.FromResult(mensagem);
+                var retorno = await GetMensagem(mensagem.Id);
+                return await Task.FromResult(retorno);
             }
             catch(Exception ex)
             {
