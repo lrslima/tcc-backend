@@ -80,17 +80,6 @@ namespace Condolencia.Controllers
         // POST: api/Usuarios
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Usuario>> PostUsuario(Usuario usuario)
-        {
-            _context.Usuario.Add(usuario);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetUsuario", new { id = usuario.Id }, usuario);
-        }
-
-        // POST: api/Usuarios
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
         public async Task<ActionResult<UsuarioViewModel>> PostUsuario(UsuarioViewModel usuarioViewModel)
         {
             var retorno = await _usuarioService.GetUsuariosLoginAsync(usuarioViewModel.Email, usuarioViewModel.Senha);
