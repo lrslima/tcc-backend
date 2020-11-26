@@ -92,7 +92,7 @@ namespace Condolencia.Services
                       <body>
                       <p>Olá " + pessoa.Nome + " " + pessoa.SobreNome + @"</p>
                       <p>Sua condolência foi aprovada e já está publicada. Você poderá acessar a condolência através deste QR code.</p>
-                      <p><br><img src= 'https://www.opememorial.net/api/QRCode/IdCondolencia?idCondolencia=" + mensagemModeradaViewModel.IdMensagem + @" alt ='QRCode'/></br></p>
+                      <p><br><img src= 'https://www.opememorial.net/api/QRCode/IdCondolencia?idCondolencia=" + mensagemModeradaViewModel.IdMensagem  + @"' class='CToWUd a6T' tabindex='0'/></br></p>
                       <p>Caso não consiga ler o QR code, poderá acessar a condolência clicando <a href='https://avarc.vercel.app/condolencia/" + mensagemModeradaViewModel.IdMensagem + @"'> neste link</a></p>                      
                       </body>
                       </html>
