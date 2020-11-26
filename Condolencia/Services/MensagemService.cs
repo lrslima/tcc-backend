@@ -111,7 +111,7 @@ namespace Condolencia.Services
                 mensagem.Status = mensagemModeradaViewModel.Status;
                 mensagem.QrCode = imagem;
 
-                _condolenciaContext.Add(mensagem);
+                _condolenciaContext.Update(mensagem);
                 _condolenciaContext.SaveChanges();
 
                 //return await Task.FromResult(mensagem);
