@@ -86,10 +86,9 @@ namespace Condolencia.Services
                     stringBase64 = Convert.ToBase64String(imagem);
                     htmlString = @"<html>
                       <body>
-                      <p>Dear Ms. Susan,</p>
-                      <p>Thank you for your letter of yesterday inviting me to come for an interview on Friday afternoon, 5th July, at 2:30.
-                              I shall be happy to be there as requested and will bring my diploma and other papers with me.</p>
-                      <p>Sincerely,<br>-Jack</br></p>
+                      <p>Olá " + pessoa.Nome + " " + pessoa.SobreNome + @"</p>
+                      <p>Sua condolência foi aprovada e já está publicada. Você poderá acessar a condolência através deste QR code.</p>
+                      <p><br>" + imagem + @"</br></p>
                       </body>
                       </html>
                      ";
@@ -98,10 +97,8 @@ namespace Condolencia.Services
                 {
                     htmlString = @"<html>
                       <body>
-                      <p>Dear Ms. Susan,</p>
-                      <p>Thank you for your letter of yesterday inviting me to come for an interview on Friday afternoon, 5th July, at 2:30.
-                              I shall be happy to be there as requested and will bring my diploma and other papers with me.</p>
-                      <p>Sincerely,<br>-Jack</br></p>
+                      <p>Olá " + pessoa.Nome + " " + pessoa.SobreNome + @"</p>
+                      <p>Sua condolência foi reprovada e não poderá ser publicada.</p>
                       </body>
                       </html>
                      ";
@@ -111,7 +108,7 @@ namespace Condolencia.Services
                 mensagem.Status = mensagemModeradaViewModel.Status;
                 mensagem.QrCode = imagem;
 
-                _condolenciaContext.Add(mensagem);
+                _condolenciaContext.Update(mensagem);
                 _condolenciaContext.SaveChanges();
 
                 //return await Task.FromResult(mensagem);
