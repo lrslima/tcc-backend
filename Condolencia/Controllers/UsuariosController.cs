@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Condolencia.Data;
 using Condolencia.Models;
+using Condolencia.DTOs;
+using Condolencia.Interfaces;
 
 namespace Condolencia.Controllers
 {
@@ -15,10 +17,12 @@ namespace Condolencia.Controllers
     public class UsuariosController : ControllerBase
     {
         private readonly CondolenciaContext _context;
+        private readonly IUsuarioService _usuarioService;
 
-        public UsuariosController(CondolenciaContext context)
+        public UsuariosController(CondolenciaContext context, IUsuarioService usuarioService)
         {
             _context = context;
+            _usuarioService = usuarioService;
         }
 
         // GET: api/Usuarios
@@ -82,6 +86,16 @@ namespace Condolencia.Controllers
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetUsuario", new { id = usuario.Id }, usuario);
+        }
+
+        // POST: api/Usuarios
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost]
+        public async Task<ActionResult<UsuarioViewModel>> PostUsuario(UsuarioViewModel usuarioViewModel)
+        {
+            var retorno = await _usuarioService.GetUsuariosLoginAsync(usuarioViewModel.Email, usuarioViewModel.Senha);
+            
+            return retorno;
         }
 
         // DELETE: api/Usuarios/5

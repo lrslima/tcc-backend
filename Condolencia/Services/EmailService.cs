@@ -46,7 +46,7 @@ namespace Condolencia.Services
                 mail.To.Add(new MailAddress(toEmail));
                 mail.CC.Add(new MailAddress(_emailSettings.CcEmail));
 
-                mail.Subject = "Sua mensagem foi aprovada pela moderação - " + subject;
+                mail.Subject = subject;
                 mail.Body = message;
                 mail.IsBodyHtml = true;
                 mail.Priority = MailPriority.High;

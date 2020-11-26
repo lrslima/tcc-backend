@@ -18,7 +18,7 @@ namespace Condolencia.Services
             _context = context;
         }
 
-        public async Task<int> CadastrarModeracao(MensagemModeradaViewModel mensagemModeradaViewModel)
+        public async Task<int> SalvarMensagemModeracao(MensagemModeradaViewModel mensagemModeradaViewModel)
         {
             try
             {

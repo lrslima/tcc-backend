@@ -17,7 +17,7 @@ namespace Condolencia.Services
             _context = context;
         }
 
-        public async Task<List<Usuario>> GetUsuariosAdminAsync(string email, string senha)
+        public async Task<UsuarioViewModel> GetUsuariosLoginAsync(string email, string senha)
         {
             try
             {
@@ -32,10 +32,22 @@ namespace Condolencia.Services
 
                                  }).Where(i =>
                                             i.Email == email &&
-                                            i.Senha == senha &&
-                                            i.TipoUsuario == 1).ToList();
+                                            i.Senha == senha ).ToList().FirstOrDefault();
+                
+                UsuarioViewModel usuarioRet = new UsuarioViewModel();
+                usuarioRet.id = listAdmin.Id;
+                usuarioRet.Nome = listAdmin.Nome;
 
-                return await Task.FromResult(listAdmin);
+                if (listAdmin != null)
+                {
+                    usuarioRet.Autorizado = true;
+                }
+                else
+                {
+                    usuarioRet.Autorizado = false;
+                }
+
+                return await Task.FromResult(usuarioRet);
             }
             catch (Exception ex)
             {

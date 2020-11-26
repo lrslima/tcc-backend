@@ -65,22 +65,49 @@ namespace Condolencia.Services
         {
             try
             {
+                var mensagem = await _condolenciaContext.Mensagem.FindAsync(mensagemModeradaViewModel.IdMensagem);
+                var pessoa = await _condolenciaContext.Pessoa.FindAsync(mensagem.IdPessoa);
+
                 string assunto = "Mensagem reprovada pelo moderador";
+                
                 // incluir moderção na tabela de moderação ------ var idModeracao = await _ModeracaoMensagemService.AlterarStatus(statusViewModel.Status);
-                var Moderacao = await _mensagemModeradaService.CadastrarModeracao(mensagemModeradaViewModel);
+                var Moderacao = await _mensagemModeradaService.SalvarMensagemModeracao(mensagemModeradaViewModel);
+                
+                string htmlString ="";
 
                 // Verificar se Aprovado gerar o QR code
                 string stringBase64 = string.Empty;
                 Byte[] imagem = null;
+                
                 if (mensagemModeradaViewModel.Status.Trim().Equals("Aprovado", StringComparison.OrdinalIgnoreCase))
                 {
                     assunto = "Mensagem aprovada pelo moderador";
                     imagem = QRCodeService.GenerateByteArray($"https://avarc.vercel.app");
                     stringBase64 = Convert.ToBase64String(imagem);
+                    htmlString = @"<html>
+                      <body>
+                      <p>Dear Ms. Susan,</p>
+                      <p>Thank you for your letter of yesterday inviting me to come for an interview on Friday afternoon, 5th July, at 2:30.
+                              I shall be happy to be there as requested and will bring my diploma and other papers with me.</p>
+                      <p>Sincerely,<br>-Jack</br></p>
+                      </body>
+                      </html>
+                     ";
+                }
+                else
+                {
+                    htmlString = @"<html>
+                      <body>
+                      <p>Dear Ms. Susan,</p>
+                      <p>Thank you for your letter of yesterday inviting me to come for an interview on Friday afternoon, 5th July, at 2:30.
+                              I shall be happy to be there as requested and will bring my diploma and other papers with me.</p>
+                      <p>Sincerely,<br>-Jack</br></p>
+                      </body>
+                      </html>
+                     ";
                 }
                 
                 // alterar status e incluir o QR code na tabela mensagem 
-                var mensagem = await _condolenciaContext.Mensagem.FindAsync(mensagemModeradaViewModel.IdMensagem);
                 mensagem.Status = mensagemModeradaViewModel.Status;
                 mensagem.QrCode = imagem;
 
@@ -91,9 +118,7 @@ namespace Condolencia.Services
 
                 // Formatar o corpo do e-mail ??? aqui ou no método de envio de e-mail
                 // Enviar mensagem
-                var pessoa = await _condolenciaContext.Pessoa.FindAsync(mensagem.IdPessoa);
-                await _emailService.SendEmailAsync(pessoa.Email, assunto, "teste");
-
+                await _emailService.SendEmailAsync(pessoa.Email, assunto, htmlString);
 
                 var result = await GetMensagem(mensagemModeradaViewModel.IdMensagem);
 

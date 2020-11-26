@@ -9,6 +9,6 @@ namespace Condolencia.Interfaces
 {
     public interface IMensagemModeradaService
     {
-        Task<int> CadastrarModeracao(MensagemModeradaViewModel mensagemModeradaViewModel);
+        Task<int> SalvarMensagemModeracao(MensagemModeradaViewModel mensagemModeradaViewModel);
     }
 }
