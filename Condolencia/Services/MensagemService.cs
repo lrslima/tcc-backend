@@ -20,15 +20,16 @@ namespace Condolencia.Services
         private readonly IEmailService _emailService;
         private readonly IMensagemModeradaService _mensagemModeradaService;
 
-        public MensagemService(CondolenciaContext condolenciaContext, IPessoaService pessoaService, IVitimaService vitimaService, IEmailService emailService)
+        public MensagemService(CondolenciaContext condolenciaContext, IPessoaService pessoaService, IVitimaService vitimaService, IEmailService emailService, IMensagemModeradaService mensagemModeradaService)
         {
             _condolenciaContext = condolenciaContext;
             _pessoaService = pessoaService;
             _vitimaService = vitimaService;
             _emailService = emailService;
-        }
+            _mensagemModeradaService = mensagemModeradaService;
+    }
 
-        public async Task<Mensagem> RegistrarMensagem(MensagemRegistrar mensagemViewModel)
+    public async Task<Mensagem> RegistrarMensagem(MensagemRegistrar mensagemViewModel)
         {
             try
             {
@@ -59,7 +60,7 @@ namespace Condolencia.Services
 
         }
 
-        public async void AlterarStatus(MensagemModeradaViewModel mensagemModeradaViewModel)
+        public async Task<MensagemRegistrar> AlterarStatus(MensagemModeradaViewModel mensagemModeradaViewModel)
         {
             try
             {
@@ -91,21 +92,17 @@ namespace Condolencia.Services
                 // Enviar mensagem
                 var pessoa = await _condolenciaContext.Pessoa.FindAsync(mensagem.IdPessoa);
                 await _emailService.SendEmailAsync(pessoa.Email, assunto, "teste");
+
+
+                var result = await GetMensagem(mensagemModeradaViewModel.IdMensagem);
+
+                return await Task.FromResult(result);
             }
             catch (Exception ex)
             {
                 throw ex;
             }
         }
-
-        ///exemplo
-        //método de alterar status
-        //public async void AlterarStatus(MensagemRegistrar mensagemViewModel)
-        //{
-
-        //    //chamada do metodo de email
-        //    await _emailService.SendEmailAsync(mensagemViewModel.Pessoa.email, "teste", "teste");
-        //}
 
 
         public async Task<List<MensagemRegistrar>> GetAllMensagens()
@@ -122,6 +119,7 @@ namespace Condolencia.Services
                                          texto = mensagem.Texto,
                                          politica_privacidade = mensagem.PoliticaPrivacidade,
                                          privacidade = mensagem.Privacidade,
+                                         Data = mensagem.DataCriacao,
                                          Pessoa = new PessoaViewModel
                                          {
                                              id = pessoa.Id,
@@ -154,7 +152,54 @@ namespace Condolencia.Services
             }
         }
 
-        public async Task<List<MensagemRegistrar>> GetMensagem(int idMensagem)
+        public async Task<MensagemRegistrar> GetMensagem(int idMensagem)
+        {
+            try
+            {
+                var result = (from mensagem in _condolenciaContext.Mensagem
+                                    join pessoa in _condolenciaContext.Pessoa on mensagem.IdPessoa equals pessoa.Id
+                                    join vitima in _condolenciaContext.Vitima on mensagem.IdVitima equals vitima.Id
+                                    select new MensagemRegistrar
+                                    {
+                                        Id = mensagem.Id,
+                                        status = mensagem.Status,
+                                        texto = mensagem.Texto,
+                                        politica_privacidade = mensagem.PoliticaPrivacidade,
+                                        privacidade = mensagem.Privacidade,
+                                        Data = mensagem.DataCriacao,
+                                        Pessoa = new PessoaViewModel
+                                        {
+                                            id = pessoa.Id,
+                                            nome = pessoa.Nome,
+                                            sobrenome = pessoa.SobreNome,
+                                            cpf = pessoa.CPF,
+                                            rg = pessoa.RG,
+                                            email = pessoa.Email,
+                                            sentimento = mensagem.Sentimento
+                                        },
+                                        Vitima = new VitimaViewModel
+                                        {
+                                            id = vitima.Id,
+                                            nome = vitima.Nome,
+                                            sobrenome = vitima.SobreNome,
+                                            cpf = vitima.CPF,
+                                            rg = vitima.RG,
+                                            endereco_rua = vitima.Rua,
+                                            endereco_cidade = vitima.Cidade,
+                                            endereco_estado = vitima.Estado,
+                                            imagem = vitima.Fotografia
+                                        }
+                                    }).Where(i => i.Id == idMensagem).ToList().FirstOrDefault();
+
+                return await Task.FromResult(result);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<List<MensagemRegistrar>> GetMensagemByStatus(string status)
         {
             try
             {
@@ -190,7 +235,7 @@ namespace Condolencia.Services
                                             endereco_estado = vitima.Estado,
                                             imagem = vitima.Fotografia
                                         }
-                                    }).Where(i => i.Id == idMensagem).ToList();
+                                    }).Where(i => i.status == status).ToList();
 
                 return await Task.FromResult(listMensagem);
             }

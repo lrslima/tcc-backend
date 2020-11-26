@@ -11,10 +11,12 @@ namespace Condolencia.Interfaces
     {
         Task<Mensagem> RegistrarMensagem(MensagemRegistrar mensagemViewModel);
         
-        void AlterarStatus(MensagemModeradaViewModel mensagemModeradaViewModel);
+        Task<MensagemRegistrar> AlterarStatus(MensagemModeradaViewModel mensagemModerada);
 
         Task<List<MensagemRegistrar>> GetAllMensagens();
         
-        Task<List<MensagemRegistrar>> GetMensagem(int idMensagem);
+        Task<MensagemRegistrar> GetMensagem(int idMensagem);
+
+        Task<List<MensagemRegistrar>> GetMensagemByStatus(string status);
     }
 }

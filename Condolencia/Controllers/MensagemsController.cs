@@ -25,25 +25,11 @@ namespace Condolencia.Controllers
             _mensagemService = mensagemService;
         }
 
-        // GET: api/Mensagems/5
-        //[HttpGet("{id}")]
-        //public async Task<ActionResult<Mensagem>> GetMensagem(int id)
-        //{
-        //    var mensagem = await _context.Mensagem.FindAsync(id);
-        //
-        //    if (mensagem == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return mensagem;
-        //}
-        // GET: api/Mensagems/5
-        
-        [HttpGet("{id}")]
-        public async Task<ActionResult<List<MensagemRegistrar>>> GetMensagem(int id)
+        // GET: api/Mensagems por status/5
+        [HttpGet("status")]
+        public async Task<ActionResult<List<MensagemRegistrar>>> GetMensagemByStatus(string status)
         {
-            var result = await _mensagemService.GetMensagem(id);
+            var result = await _mensagemService.GetMensagemByStatus(status);
 
             if (result == null)
             {
@@ -53,35 +39,33 @@ namespace Condolencia.Controllers
             return result;
         }
 
-        // PUT: api/Mensagems/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutMensagem(int id, Mensagem mensagem)
+        [HttpGet("id")]
+        [Produces("application/json")]
+        public async Task<ActionResult<MensagemRegistrar>> GetMensagem(int id)
         {
-            if (id != mensagem.Id)
+            var mensagem = await _mensagemService.GetMensagem(id);
+
+            if (mensagem == null)
+            {
+                return NotFound();
+            }
+
+            return mensagem;
+        }
+
+        [HttpPut("id")]
+        [Produces("application/json")]
+        public async Task<ActionResult<MensagemRegistrar>> PutMensagem(int id, [FromBody] MensagemModeradaViewModel mensagemModerada)
+        {
+            if (id == 0 || id < 0)
             {
                 return BadRequest();
             }
 
-            _context.Entry(mensagem).State = EntityState.Modified;
+            mensagemModerada.IdMensagem = id;
+            var result = await _mensagemService.AlterarStatus(mensagemModerada);
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!MensagemExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            return result;
         }
 
 
@@ -90,8 +74,8 @@ namespace Condolencia.Controllers
         public async Task<ActionResult<List<MensagemRegistrar>>> PostMensagem([FromBody] MensagemRegistrar publicarMensagem)
         {
             var result = await _mensagemService.RegistrarMensagem(publicarMensagem);
-            var modelJson = await _mensagemService.GetMensagem(result.Id);
-            return modelJson;
+
+            return result;
         }
 
         [HttpGet]

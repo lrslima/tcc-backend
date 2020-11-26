@@ -31,6 +31,8 @@ namespace Condolencia
         public void ConfigureServices(IServiceCollection services)
         {
 
+            services.AddCors();
+
             services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
             services.AddScoped<IMensagemService, MensagemService>();
             services.AddScoped<IPessoaService, PessoaService>();
@@ -56,6 +58,11 @@ namespace Condolencia
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseCors(builder => builder
+                        .AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader());
 
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Condolencia v1"));
