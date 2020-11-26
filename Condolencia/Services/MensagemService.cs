@@ -20,15 +20,16 @@ namespace Condolencia.Services
         private readonly IEmailService _emailService;
         private readonly IMensagemModeradaService _mensagemModeradaService;
 
-        public MensagemService(CondolenciaContext condolenciaContext, IPessoaService pessoaService, IVitimaService vitimaService, IEmailService emailService)
+        public MensagemService(CondolenciaContext condolenciaContext, IPessoaService pessoaService, IVitimaService vitimaService, IEmailService emailService, IMensagemModeradaService mensagemModeradaService)
         {
             _condolenciaContext = condolenciaContext;
             _pessoaService = pessoaService;
             _vitimaService = vitimaService;
             _emailService = emailService;
-        }
+            _mensagemModeradaService = mensagemModeradaService;
+    }
 
-        public async Task<Mensagem> RegistrarMensagem(MensagemRegistrar mensagemViewModel)
+    public async Task<Mensagem> RegistrarMensagem(MensagemRegistrar mensagemViewModel)
         {
             try
             {
@@ -59,7 +60,7 @@ namespace Condolencia.Services
 
         }
 
-        public async void AlterarStatus(MensagemModeradaViewModel mensagemModeradaViewModel)
+        public async Task<MensagemRegistrar> AlterarStatus(MensagemModeradaViewModel mensagemModeradaViewModel)
         {
             try
             {
@@ -91,21 +92,17 @@ namespace Condolencia.Services
                 // Enviar mensagem
                 var pessoa = await _condolenciaContext.Pessoa.FindAsync(mensagem.IdPessoa);
                 await _emailService.SendEmailAsync(pessoa.Email, assunto, "teste");
+
+
+                var result = await GetMensagem(mensagemModeradaViewModel.IdMensagem);
+
+                return await Task.FromResult(result);
             }
             catch (Exception ex)
             {
                 throw ex;
             }
         }
-
-        ///exemplo
-        //método de alterar status
-        //public async void AlterarStatus(MensagemRegistrar mensagemViewModel)
-        //{
-
-        //    //chamada do metodo de email
-        //    await _emailService.SendEmailAsync(mensagemViewModel.Pessoa.email, "teste", "teste");
-        //}
 
 
         public async Task<List<MensagemRegistrar>> GetAllMensagens()
@@ -121,6 +118,7 @@ namespace Condolencia.Services
                                          texto = mensagem.Texto,
                                          politica_privacidade = mensagem.PoliticaPrivacidade,
                                          privacidade = mensagem.Privacidade,
+                                         Data = mensagem.DataCriacao,
                                          Pessoa = new PessoaViewModel
                                          {
                                              nome = pessoa.Nome,
@@ -151,11 +149,11 @@ namespace Condolencia.Services
             }
         }
 
-        public async Task<List<MensagemRegistrar>> GetMensagem(int idMensagem)
+        public async Task<MensagemRegistrar> GetMensagem(int idMensagem)
         {
             try
             {
-                var listMensagem = (from mensagem in _condolenciaContext.Mensagem
+                var result = (from mensagem in _condolenciaContext.Mensagem
                                     from pessoa in _condolenciaContext.Pessoa
                                     from vitima in _condolenciaContext.Vitima
                                     select new MensagemRegistrar
@@ -165,6 +163,7 @@ namespace Condolencia.Services
                                         texto = mensagem.Texto,
                                         politica_privacidade = mensagem.PoliticaPrivacidade,
                                         privacidade = mensagem.Privacidade,
+                                        Data = mensagem.DataCriacao,
                                         Pessoa = new PessoaViewModel
                                         {
                                             nome = pessoa.Nome,
@@ -185,9 +184,9 @@ namespace Condolencia.Services
                                             endereco_estado = vitima.Estado,
                                             imagem = vitima.Fotografia
                                         }
-                                    }).Where(i => i.Id == idMensagem).ToList();
+                                    }).Where(i => i.Id == idMensagem).ToList().FirstOrDefault();
 
-                return await Task.FromResult(listMensagem);
+                return await Task.FromResult(result);
             }
             catch (Exception ex)
             {

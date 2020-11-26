@@ -25,11 +25,11 @@ namespace Condolencia.Controllers
             _mensagemService = mensagemService;
         }
 
-        // GET: api/Mensagems/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Mensagem>> GetMensagem(int id)
+        [HttpGet("id")]
+        [Produces("application/json")]
+        public async Task<ActionResult<MensagemRegistrar>> GetMensagem(int id)
         {
-            var mensagem = await _context.Mensagem.FindAsync(id);
+            var mensagem = await _mensagemService.GetMensagem(id);
 
             if (mensagem == null)
             {
@@ -39,35 +39,19 @@ namespace Condolencia.Controllers
             return mensagem;
         }
 
-        // PUT: api/Mensagems/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutMensagem(int id, Mensagem mensagem)
+        [HttpPut("id")]
+        [Produces("application/json")]
+        public async Task<ActionResult<MensagemRegistrar>> PutMensagem(int id, [FromBody] MensagemModeradaViewModel mensagemModerada)
         {
-            if (id != mensagem.Id)
+            if (id == 0 || id < 0)
             {
                 return BadRequest();
             }
 
-            _context.Entry(mensagem).State = EntityState.Modified;
+            mensagemModerada.IdMensagem = id;
+            var result = await _mensagemService.AlterarStatus(mensagemModerada);
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!MensagemExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            return result;
         }
 
 
