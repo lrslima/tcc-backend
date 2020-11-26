@@ -17,6 +17,50 @@ namespace Condolencia.Services
             _context = context;
         }
 
+        public Task<bool> CadastrarModerador(UsuarioViewModel usuario)
+        {
+            try
+            {
+                Usuario user = new Usuario();
+                user.Nome = usuario.Nome;
+                user.Sobrenome = usuario.Sobrenome;
+                user.Senha = usuario.Senha;
+                user.ConfirmarSenha = usuario.Senha;
+                user.TipoUsuario = 2;
+                user.Ativo = 1;
+                user.Email = usuario.Email;
+
+                _context.Usuario.Add(user);
+                _context.SaveChanges();
+
+                return Task.FromResult(true);
+
+            }
+            catch (Exception ex)
+            {
+                return Task.FromResult(false);
+            }
+        }
+
+        public Task<List<Usuario>> ListaModeradores()
+        {
+            try
+            {
+                var result = _context.Usuario.Where(x => x.TipoUsuario == 2).ToList();
+                result.ForEach(usuario =>
+                {
+                    usuario.Senha = "*****";
+                });
+
+                return Task.FromResult(result);
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         public async Task<UsuarioViewModel> GetUsuariosLoginAsync(string email, string senha)
         {
             try

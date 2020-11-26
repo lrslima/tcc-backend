@@ -80,10 +80,29 @@ namespace Condolencia.Controllers
         // POST: api/Usuarios
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<UsuarioViewModel>> PostUsuario(UsuarioViewModel usuarioViewModel)
+        public async Task<ActionResult<UsuarioViewModel>> PostUsuario(UsuarioViewModelLogin usuarioViewModel)
         {
             var retorno = await _usuarioService.GetUsuariosLoginAsync(usuarioViewModel.Email, usuarioViewModel.Senha);
             
+            return retorno;
+        }
+
+        [HttpPost]
+        [Route("cadastrar")]
+        public async Task<ActionResult<bool>> CadastrarModerador(UsuarioViewModel usuarioViewModel)
+        {
+            var retorno = await _usuarioService.CadastrarModerador(usuarioViewModel);
+
+            return retorno;
+        }
+
+        [HttpGet]
+        [Produces("application/json")]
+        [Route("moderadores")]
+        public async Task<ActionResult<List<Usuario>>> ListaModeradores( )
+        {
+            var retorno = await _usuarioService.ListaModeradores();
+
             return retorno;
         }
 

@@ -10,5 +10,9 @@ namespace Condolencia.Interfaces
     public interface IUsuarioService
     {
         Task<UsuarioViewModel> GetUsuariosLoginAsync(string email, string senha);
+        Task<bool> CadastrarModerador(UsuarioViewModel usuario);
+
+        Task<List<Usuario>> ListaModeradores();
+
     }
 }
