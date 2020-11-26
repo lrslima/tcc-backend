@@ -1,14 +1,15 @@
-﻿using Condolencia.Services;
+﻿using Condolencia.Interfaces;
+using Condolencia.Services;
 using Microsoft.AspNetCore.Mvc;
 using Condolencia.Data;
 using Condolencia.DTOs;
-using Condolencia.Interfaces;
 using Condolencia.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Drawing;
 
 namespace Condolencia.Services
 {
@@ -77,18 +78,22 @@ namespace Condolencia.Services
 
                 // Verificar se Aprovado gerar o QR code
                 string stringBase64 = string.Empty;
-                Byte[] imagem = null;
+                Bitmap imagemQRcode;
+                Byte[] imagemCode = null;
                 
                 if (mensagemModeradaViewModel.Status.Trim().Equals("Aprovado", StringComparison.OrdinalIgnoreCase))
                 {
                     assunto = "Mensagem aprovada pelo moderador";
-                    imagem = QRCodeService.GenerateByteArray($"https://avarc.vercel.app");
-                    stringBase64 = Convert.ToBase64String(imagem);
+                    string urlCondolencia = $"https://avarc.vercel.app/condolencia/" + mensagemModeradaViewModel.IdMensagem;
+                    imagemCode = QRCodeService.GenerateByteArray(urlCondolencia);
+                    imagemQRcode = QRCodeService.GenerateImage(urlCondolencia);
+                    stringBase64 = Convert.ToBase64String(imagemCode);
                     htmlString = @"<html>
                       <body>
                       <p>Olá " + pessoa.Nome + " " + pessoa.SobreNome + @"</p>
                       <p>Sua condolência foi aprovada e já está publicada. Você poderá acessar a condolência através deste QR code.</p>
-                      <p><br>" + imagem + @"</br></p>
+                      <p><br><img src= 'https://www.opememorial.net/api/QRCode/IdCondolencia?idCondolencia=" + mensagemModeradaViewModel.IdMensagem + @" alt ='QRCode'/></br></p>
+                      <p>Caso não consiga ler o QR code, poderá acessar a condolência clicando <a href='https://avarc.vercel.app/condolencia/" + mensagemModeradaViewModel.IdMensagem + @"'> neste link</a></p>                      
                       </body>
                       </html>
                      ";
@@ -106,7 +111,7 @@ namespace Condolencia.Services
                 
                 // alterar status e incluir o QR code na tabela mensagem 
                 mensagem.Status = mensagemModeradaViewModel.Status;
-                mensagem.QrCode = imagem;
+                mensagem.QrCode = imagemCode;
 
                 _condolenciaContext.Update(mensagem);
                 _condolenciaContext.SaveChanges();
@@ -126,7 +131,6 @@ namespace Condolencia.Services
                 throw ex;
             }
         }
-
 
         public async Task<List<MensagemRegistrar>> GetAllMensagens()
         {

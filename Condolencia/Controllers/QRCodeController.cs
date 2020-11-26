@@ -15,10 +15,10 @@ namespace Condolencia.Controllers
     public class QRCodeController : ControllerBase
     {
 
-        [HttpGet("qrcode")]
-        public IActionResult GetQrCode()
+        [HttpGet("IdCondolencia")]
+        public IActionResult GetQrCode(int idCondolencia)
         {
-            var image = QRCodeService.GenerateByteArray($"https://avarc.vercel.app");
+            var image = QRCodeService.GenerateByteArray($"https://avarc.vercel.app/condolencia/" + idCondolencia);
             return File(image, "image/jpeg");
         }
     }
