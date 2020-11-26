@@ -25,6 +25,20 @@ namespace Condolencia.Controllers
             _mensagemService = mensagemService;
         }
 
+        // GET: api/Mensagems por status/5
+        [HttpGet("status")]
+        public async Task<ActionResult<List<MensagemRegistrar>>> GetMensagemByStatus(string status)
+        {
+            var result = await _mensagemService.GetMensagemByStatus(status);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return result;
+        }
+
         // GET: api/Mensagems/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Mensagem>> GetMensagem(int id)
