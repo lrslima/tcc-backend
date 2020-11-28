@@ -21,19 +21,34 @@ namespace Condolencia.Services
         {
             try
             {
-                Usuario user = new Usuario();
-                user.Nome = usuario.Nome;
-                user.Sobrenome = usuario.Sobrenome;
-                user.Senha = usuario.Senha;
-                user.ConfirmarSenha = usuario.Senha;
-                user.TipoUsuario = 2;
-                user.Ativo = 1;
-                user.Email = usuario.Email;
+                // Validar se o e-mail já foi cadastrado anteriormente
+                var existeEmail = _context.Usuario.Where(x => x.Email.ToUpper().Trim() == usuario.Email.ToUpper().Trim()).Count();
 
-                _context.Usuario.Add(user);
-                _context.SaveChanges();
+                if (existeEmail == 0)
+                {
+                    if (!Validacao.ValidaEmail.IsEmail(usuario.Email.Trim()))
+                    {
+                        return Task.FromResult(false);
+                    }
 
-                return Task.FromResult(true);
+                    Usuario user = new Usuario();
+                    user.Nome = usuario.Nome;
+                    user.Sobrenome = usuario.Sobrenome;
+                    user.Senha = usuario.Senha;
+                    user.ConfirmarSenha = usuario.Senha;
+                    user.TipoUsuario = 2;
+                    user.Ativo = 1;
+                    user.Email = usuario.Email.Trim();
+
+                    _context.Usuario.Add(user);
+                    _context.SaveChanges();
+
+                    return Task.FromResult(true);
+                }
+                else
+                {
+                    return Task.FromResult(false);
+                }
 
             }
             catch (Exception ex)
@@ -65,24 +80,24 @@ namespace Condolencia.Services
         {
             try
             {
-                var listAdmin = (from usuario in _context.Usuario
-                                 select new Usuario
-                                 {
-                                     Id = usuario.Id,
-                                     Nome = usuario.Nome,
-                                     Sobrenome = usuario.Sobrenome,
-                                     Email = usuario.Email,
-                                     Senha = usuario.Senha,
+                var listUser = (from usuario in _context.Usuario
+                                select new Usuario
+                                {
+                                    Id = usuario.Id,
+                                    Nome = usuario.Nome,
+                                    Sobrenome = usuario.Sobrenome,
+                                    Email = usuario.Email,
+                                    Senha = usuario.Senha,
 
-                                 }).Where(i =>
-                                            i.Email == email &&
-                                            i.Senha == senha).ToList().FirstOrDefault();
+                                }).Where(i =>
+                                           i.Email == email &&
+                                           i.Senha == senha).ToList().FirstOrDefault();
 
                 UsuarioViewModel usuarioRet = new UsuarioViewModel();
-                usuarioRet.id = listAdmin.Id;
-                usuarioRet.Nome = listAdmin.Nome;
+                usuarioRet.id = listUser.Id;
+                usuarioRet.Nome = listUser.Nome;
 
-                if (listAdmin != null)
+                if (listUser != null)
                 {
                     usuarioRet.Autorizado = true;
                 }

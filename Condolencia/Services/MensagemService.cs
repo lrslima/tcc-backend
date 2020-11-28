@@ -34,10 +34,13 @@ namespace Condolencia.Services
         {
             try
             {
-
+                // Inclusão da Pessoa que está registrando a condolência
                 var idPessoa = await _pessoaService.CadastrarPessoa(mensagemViewModel.Pessoa);
+
+                // Inclusão da Vítima que está sendo homenageada
                 var idVitima = await _vitimaService.CadastrarVitima(mensagemViewModel.Vitima);
 
+                // Inclusão da mensagem
                 Mensagem mensagem = new Mensagem();
                 mensagem.IdPessoa = idPessoa;
                 mensagem.IdVitima = idVitima;

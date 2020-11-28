@@ -43,6 +43,13 @@ namespace Condolencia.Models
         public string ConfirmarSenha { get; set; }
 
         public int TipoUsuario { get; set; }
-
+        
+        public string NomeCompleto
+        {
+            get
+            {
+                return Nome + " " + Sobrenome;
+            }
+        }
     }
 }

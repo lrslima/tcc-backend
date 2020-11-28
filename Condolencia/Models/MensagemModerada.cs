@@ -15,7 +15,9 @@ namespace Condolencia.Models
         public int Id { get; set; }
 
         public int IdMensagem { get; set; }
-        
+
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy HH:mm:ss}", ApplyFormatInEditMode = true)]
         public DateTime DataAcao { get; set; }
         
         [Required]

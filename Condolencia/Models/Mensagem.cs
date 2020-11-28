@@ -36,6 +36,8 @@ namespace Condolencia.Models
 
         public Byte[] QrCode { get; set; }
 
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy HH:mm:ss}", ApplyFormatInEditMode = true)]
         public DateTime DataCriacao { get; set; }
     }
 }
