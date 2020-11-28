@@ -21,6 +21,8 @@ namespace Condolencia.DTOs
 
         public int privacidade { get; set; }
 
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy HH:mm:ss}", ApplyFormatInEditMode = true)]
         public DateTime Data { get; set; }
 
         public PessoaViewModel Pessoa { get; set; }

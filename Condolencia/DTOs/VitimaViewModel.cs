@@ -16,5 +16,12 @@ namespace Condolencia.DTOs
         public string endereco_cidade { get; set; }
         public string endereco_estado { get; set; }
         public Byte[] imagem { get; set; }
+        public string NomeCompleto
+        {
+            get
+            {
+                return nome + " " + sobrenome;
+            }
+        }
     }
 }

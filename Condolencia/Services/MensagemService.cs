@@ -47,7 +47,7 @@ namespace Condolencia.Services
                 mensagem.Sentimento = mensagemViewModel.Pessoa.sentimento;
                 mensagem.Privacidade = mensagemViewModel.privacidade;
                 mensagem.PoliticaPrivacidade = mensagemViewModel.politica_privacidade;
-                mensagem.DataCriacao = DateTime.Now;
+                //mensagem.DataCriacao = DateTime.Now;
                 mensagem.QrCode = null;
 
                 // Salvar inclusão de Pessoa
@@ -83,7 +83,7 @@ namespace Condolencia.Services
                 string assunto = "Mensagem reprovada pelo moderador";
                 
                 // incluir moderção na tabela de moderação ------ var idModeracao = await _ModeracaoMensagemService.AlterarStatus(statusViewModel.Status);
-                var Moderacao = await _mensagemModeradaService.SalvarMensagemModeracao(mensagemModeradaViewModel);
+                var moderacao = await _mensagemModeradaService.SalvarMensagemModeracao(mensagemModeradaViewModel);
                 
                 string htmlString ="";
 
@@ -124,12 +124,14 @@ namespace Condolencia.Services
                 mensagem.Status = mensagemModeradaViewModel.Status;
                 mensagem.QrCode = imagemCode;
 
+                // Gravar moderação
+                _condolenciaContext.Add(moderacao);
+                _condolenciaContext.SaveChanges();
+
+                // Atualizar dados condolencia
                 _condolenciaContext.Update(mensagem);
                 _condolenciaContext.SaveChanges();
 
-                //return await Task.FromResult(mensagem);
-
-                // Formatar o corpo do e-mail ??? aqui ou no método de envio de e-mail
                 // Enviar mensagem
                 await _emailService.SendEmailAsync(pessoa.Email, assunto, htmlString);
 

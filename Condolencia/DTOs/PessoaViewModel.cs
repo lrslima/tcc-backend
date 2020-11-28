@@ -14,5 +14,12 @@ namespace Condolencia.DTOs
         public string rg { get; set; }
         public string email { get; set; }
         public string sentimento { get; set; }
+        public string NomeCompleto
+        {
+            get
+            {
+                return nome + " " + sobrenome;
+            }
+        }
     }
 }

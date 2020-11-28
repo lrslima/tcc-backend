@@ -8,7 +8,6 @@ namespace Condolencia.DTOs
 {
     public class PublicarMensagem
     {
-
         public int Nome { get; set; }
 
         public int Sobrenome { get; set; }

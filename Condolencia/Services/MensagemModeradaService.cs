@@ -18,7 +18,7 @@ namespace Condolencia.Services
             _context = context;
         }
 
-        public async Task<int> SalvarMensagemModeracao(MensagemModeradaViewModel mensagemModeradaViewModel)
+        public async Task<MensagemModerada> SalvarMensagemModeracao(MensagemModeradaViewModel mensagemModeradaViewModel)
         {
             try
             {
@@ -26,12 +26,12 @@ namespace Condolencia.Services
                 mensagemModerada.IdMensagem = mensagemModeradaViewModel.IdMensagem;
                 mensagemModerada.IdAlteradoPor = mensagemModeradaViewModel.IdAlteradoPor;
                 mensagemModerada.Status = mensagemModeradaViewModel.Status;
-                mensagemModerada.DataAcao = DateTime.Now;
+                //mensagemModerada.DataAcao = DateTime.Now;
 
-                _context.Add(mensagemModerada);
-                _context.SaveChanges();
+                //_context.Add(mensagemModerada);
+                //_context.SaveChanges();
 
-                return await Task.FromResult(mensagemModerada.Id);
+                return await Task.FromResult(mensagemModerada);
             }
             catch (Exception ex)
             {
