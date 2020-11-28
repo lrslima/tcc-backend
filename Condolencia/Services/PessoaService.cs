@@ -18,7 +18,7 @@ namespace Condolencia.Services
             _context = context;
         }
 
-        public async Task<int> CadastrarPessoa(PessoaViewModel pessoaViewModel)
+        public async Task<Pessoa> CadastrarPessoa(PessoaViewModel pessoaViewModel)
         {
             try
             {
@@ -56,10 +56,7 @@ namespace Condolencia.Services
                 pessoa.RG = pessoaViewModel.rg.Trim();
                 pessoa.Email = pessoaViewModel.email;
 
-                _context.Add(pessoa);
-                _context.SaveChanges();
-
-                return await Task.FromResult(pessoa.Id);
+                return await Task.FromResult(pessoa);
             }
             catch (Exception ex)
             {

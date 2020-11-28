@@ -9,9 +9,8 @@ using System.Threading.Tasks;
 
 namespace Condolencia.Services
 {
-    public class VitimaService : IVitimaService 
+    public class VitimaService : IVitimaService
     {
-
         private readonly CondolenciaContext _context;
 
         public VitimaService(CondolenciaContext context)
@@ -19,7 +18,7 @@ namespace Condolencia.Services
             _context = context;
         }
 
-        public async Task<int> CadastrarVitima(VitimaViewModel vitimaViewModel)
+        public async Task<Vitima> CadastrarVitima(VitimaViewModel vitimaViewModel)
         {
             try
             {
@@ -44,19 +43,14 @@ namespace Condolencia.Services
                 Vitima vitima = new Vitima();
                 vitima.Nome = vitimaViewModel.nome;
                 vitima.SobreNome = vitimaViewModel.sobrenome;
-                vitima.CPF = vitimaViewModel.rg;
+                vitima.CPF = vitimaViewModel.cpf.Trim();
+                vitima.RG = vitimaViewModel.rg.Trim();
                 vitima.Rua = vitimaViewModel.endereco_rua;
                 vitima.Cidade = vitimaViewModel.endereco_cidade;
                 vitima.Estado = vitimaViewModel.endereco_estado;
                 vitima.Fotografia = vitimaViewModel.imagem;
 
-                _context.Add(vitima);
-                _context.SaveChanges();
-
-               // var myEntity = _context.Pessoa.Find(vitima);
-
-                return await Task.FromResult(vitima.Id);
-
+                return await Task.FromResult(vitima);
             }
             catch (Exception ex)
             {

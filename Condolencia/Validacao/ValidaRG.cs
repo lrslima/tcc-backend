@@ -17,7 +17,7 @@ namespace Condolencia.Validacao
                 //Verifica se o tamanho da string é 9
                 if (rg.Length == 9)
                 {
-                    int[] n = new int[8];
+                    int[] n = new int[9];
 
                     //obtém cada um dos caracteres do rg
                     n[0] = Convert.ToInt32(rg.Substring(0, 1));

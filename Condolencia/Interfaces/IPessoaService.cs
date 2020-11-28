@@ -9,7 +9,6 @@ namespace Condolencia.Interfaces
 {
     public interface IPessoaService
     {
-        Task<int> CadastrarPessoa(PessoaViewModel pessoaViewModel);
-
+        Task<Pessoa> CadastrarPessoa(PessoaViewModel pessoaViewModel);
     }
 }

@@ -35,15 +35,13 @@ namespace Condolencia.Services
             try
             {
                 // Inclusão da Pessoa que está registrando a condolência
-                var idPessoa = await _pessoaService.CadastrarPessoa(mensagemViewModel.Pessoa);
+                var pessoa = await _pessoaService.CadastrarPessoa(mensagemViewModel.Pessoa);
 
                 // Inclusão da Vítima que está sendo homenageada
-                var idVitima = await _vitimaService.CadastrarVitima(mensagemViewModel.Vitima);
-
+                var vitima = await _vitimaService.CadastrarVitima(mensagemViewModel.Vitima);
+                
                 // Inclusão da mensagem
                 Mensagem mensagem = new Mensagem();
-                mensagem.IdPessoa = idPessoa;
-                mensagem.IdVitima = idVitima;
                 mensagem.Texto = mensagemViewModel.texto;
                 mensagem.Status = "Pendente";
                 mensagem.Sentimento = mensagemViewModel.Pessoa.sentimento;
@@ -51,6 +49,16 @@ namespace Condolencia.Services
                 mensagem.PoliticaPrivacidade = mensagemViewModel.politica_privacidade;
                 mensagem.DataCriacao = DateTime.Now;
                 mensagem.QrCode = null;
+
+                // Salvar inclusão de Pessoa
+                _condolenciaContext.Add(pessoa);
+                _condolenciaContext.SaveChanges();
+                mensagem.IdPessoa = pessoa.Id;
+
+                // Salvar inclusão de Vítima
+                _condolenciaContext.Add(vitima);
+                _condolenciaContext.SaveChanges();
+                mensagem.IdVitima = vitima.Id;
 
                 _condolenciaContext.Add(mensagem);
                 _condolenciaContext.SaveChanges();

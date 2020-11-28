@@ -1,4 +1,5 @@
 ﻿using Condolencia.DTOs;
+using Condolencia.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,6 @@ namespace Condolencia.Interfaces
 {
     public interface IVitimaService
     {
-        Task<int> CadastrarVitima(VitimaViewModel vitimaViewModel);
+        Task<Vitima> CadastrarVitima(VitimaViewModel vitimaViewModel);
     }
 }
