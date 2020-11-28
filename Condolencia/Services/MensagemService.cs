@@ -47,7 +47,7 @@ namespace Condolencia.Services
                 mensagem.Sentimento = mensagemViewModel.Pessoa.sentimento;
                 mensagem.Privacidade = mensagemViewModel.privacidade;
                 mensagem.PoliticaPrivacidade = mensagemViewModel.politica_privacidade;
-                //mensagem.DataCriacao = DateTime.Now;
+                mensagem.DataCriacao = DateTime.Now;
                 mensagem.QrCode = null;
 
                 // Salvar inclusão de Pessoa

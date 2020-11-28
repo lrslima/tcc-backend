@@ -26,7 +26,7 @@ namespace Condolencia.Services
                 mensagemModerada.IdMensagem = mensagemModeradaViewModel.IdMensagem;
                 mensagemModerada.IdAlteradoPor = mensagemModeradaViewModel.IdAlteradoPor;
                 mensagemModerada.Status = mensagemModeradaViewModel.Status;
-                //mensagemModerada.DataAcao = DateTime.Now;
+                mensagemModerada.DataAcao = DateTime.Now;
 
                 //_context.Add(mensagemModerada);
                 //_context.SaveChanges();
