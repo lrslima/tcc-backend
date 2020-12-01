@@ -18,5 +18,7 @@ namespace Condolencia.Interfaces
         Task<MensagemRegistrar> GetMensagem(int idMensagem);
 
         Task<List<MensagemRegistrar>> GetMensagemByStatus(string status);
+
+        Task<List<MensagemRegistrar>> GetQrCode();
     }
 }

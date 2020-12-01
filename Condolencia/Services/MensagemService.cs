@@ -28,9 +28,9 @@ namespace Condolencia.Services
             _vitimaService = vitimaService;
             _emailService = emailService;
             _mensagemModeradaService = mensagemModeradaService;
-    }
+        }
 
-    public async Task<MensagemRegistrar> RegistrarMensagem(MensagemRegistrar mensagemViewModel)
+        public async Task<MensagemRegistrar> RegistrarMensagem(MensagemRegistrar mensagemViewModel)
         {
             try
             {
@@ -39,13 +39,21 @@ namespace Condolencia.Services
 
                 // Inclusão da Vítima que está sendo homenageada
                 var vitima = await _vitimaService.CadastrarVitima(mensagemViewModel.Vitima);
-                
+
                 // Inclusão da mensagem
                 Mensagem mensagem = new Mensagem();
                 mensagem.Texto = mensagemViewModel.texto;
                 mensagem.Status = "Pendente";
                 mensagem.Sentimento = mensagemViewModel.Pessoa.sentimento;
-                mensagem.Privacidade = mensagemViewModel.privacidade;
+                if (!String.IsNullOrEmpty(mensagemViewModel.privacidade.ToString().Trim()))
+                {
+                    mensagem.Privacidade = mensagemViewModel.privacidade;
+                }
+                else
+                {
+                    mensagem.Privacidade = 4;
+                }
+
                 mensagem.PoliticaPrivacidade = mensagemViewModel.politica_privacidade;
                 mensagem.DataCriacao = DateTime.Now;
                 mensagem.QrCode = null;
@@ -66,7 +74,7 @@ namespace Condolencia.Services
                 var retorno = await GetMensagem(mensagem.Id);
                 return await Task.FromResult(retorno);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
@@ -81,17 +89,17 @@ namespace Condolencia.Services
                 var pessoa = await _condolenciaContext.Pessoa.FindAsync(mensagem.IdPessoa);
 
                 string assunto = "Mensagem reprovada pelo moderador";
-                
+
                 // incluir moderção na tabela de moderação ------ var idModeracao = await _ModeracaoMensagemService.AlterarStatus(statusViewModel.Status);
                 var moderacao = await _mensagemModeradaService.SalvarMensagemModeracao(mensagemModeradaViewModel);
-                
-                string htmlString ="";
+
+                string htmlString = "";
 
                 // Verificar se Aprovado gerar o QR code
                 string stringBase64 = string.Empty;
                 Bitmap imagemQRcode;
                 Byte[] imagemCode = null;
-                
+
                 if (mensagemModeradaViewModel.Status.Trim().Equals("Aprovado", StringComparison.OrdinalIgnoreCase))
                 {
                     assunto = "Mensagem aprovada pelo moderador";
@@ -103,7 +111,7 @@ namespace Condolencia.Services
                       <body>
                       <p>Olá " + pessoa.Nome + " " + pessoa.SobreNome + @"</p>
                       <p>Sua condolência foi aprovada e já está publicada. Você poderá acessar a condolência através deste QR code.</p>
-                      <p><br><img src= 'https://www.opememorial.net/api/QRCode/IdCondolencia?idCondolencia=" + mensagemModeradaViewModel.IdMensagem  + @"' class='CToWUd a6T' tabindex='0'/></br></p>
+                      <p><br><img src= 'https://www.opememorial.net/api/QRCode/IdCondolencia?idCondolencia=" + mensagemModeradaViewModel.IdMensagem + @"' class='CToWUd a6T' tabindex='0'/></br></p>
                       <p>Caso não consiga ler o QR code, poderá acessar a condolência clicando <a href='https://avarc.vercel.app/condolencia/" + mensagemModeradaViewModel.IdMensagem + @"'> neste link</a></p>                      
                       </body>
                       </html>
@@ -119,7 +127,7 @@ namespace Condolencia.Services
                       </html>
                      ";
                 }
-                
+
                 // alterar status e incluir o QR code na tabela mensagem 
                 mensagem.Status = mensagemModeradaViewModel.Status;
                 mensagem.QrCode = imagemCode;
@@ -182,7 +190,7 @@ namespace Condolencia.Services
                                              endereco_estado = vitima.Estado,
                                              imagem = vitima.Fotografia
                                          }
-                                     }).ToList();
+                                     }).OrderByDescending(i => i.Id).ToList();
 
                 return await Task.FromResult(listMensagens);
             }
@@ -197,39 +205,39 @@ namespace Condolencia.Services
             try
             {
                 var result = (from mensagem in _condolenciaContext.Mensagem
-                                    join pessoa in _condolenciaContext.Pessoa on mensagem.IdPessoa equals pessoa.Id
-                                    join vitima in _condolenciaContext.Vitima on mensagem.IdVitima equals vitima.Id
-                                    select new MensagemRegistrar
-                                    {
-                                        Id = mensagem.Id,
-                                        status = mensagem.Status,
-                                        texto = mensagem.Texto,
-                                        politica_privacidade = mensagem.PoliticaPrivacidade,
-                                        privacidade = mensagem.Privacidade,
-                                        Data = mensagem.DataCriacao,
-                                        Pessoa = new PessoaViewModel
-                                        {
-                                            id = pessoa.Id,
-                                            nome = pessoa.Nome,
-                                            sobrenome = pessoa.SobreNome,
-                                            cpf = pessoa.CPF,
-                                            rg = pessoa.RG,
-                                            email = pessoa.Email,
-                                            sentimento = mensagem.Sentimento
-                                        },
-                                        Vitima = new VitimaViewModel
-                                        {
-                                            id = vitima.Id,
-                                            nome = vitima.Nome,
-                                            sobrenome = vitima.SobreNome,
-                                            cpf = vitima.CPF,
-                                            rg = vitima.RG,
-                                            endereco_rua = vitima.Rua,
-                                            endereco_cidade = vitima.Cidade,
-                                            endereco_estado = vitima.Estado,
-                                            imagem = vitima.Fotografia
-                                        }
-                                    }).Where(i => i.Id == idMensagem).ToList().FirstOrDefault();
+                              join pessoa in _condolenciaContext.Pessoa on mensagem.IdPessoa equals pessoa.Id
+                              join vitima in _condolenciaContext.Vitima on mensagem.IdVitima equals vitima.Id
+                              select new MensagemRegistrar
+                              {
+                                  Id = mensagem.Id,
+                                  status = mensagem.Status,
+                                  texto = mensagem.Texto,
+                                  politica_privacidade = mensagem.PoliticaPrivacidade,
+                                  privacidade = mensagem.Privacidade,
+                                  Data = mensagem.DataCriacao,
+                                  Pessoa = new PessoaViewModel
+                                  {
+                                      id = pessoa.Id,
+                                      nome = pessoa.Nome,
+                                      sobrenome = pessoa.SobreNome,
+                                      cpf = pessoa.CPF,
+                                      rg = pessoa.RG,
+                                      email = pessoa.Email,
+                                      sentimento = mensagem.Sentimento
+                                  },
+                                  Vitima = new VitimaViewModel
+                                  {
+                                      id = vitima.Id,
+                                      nome = vitima.Nome,
+                                      sobrenome = vitima.SobreNome,
+                                      cpf = vitima.CPF,
+                                      rg = vitima.RG,
+                                      endereco_rua = vitima.Rua,
+                                      endereco_cidade = vitima.Cidade,
+                                      endereco_estado = vitima.Estado,
+                                      imagem = vitima.Fotografia
+                                  }
+                              }).Where(i => i.Id == idMensagem).ToList().FirstOrDefault();
 
                 return await Task.FromResult(result);
             }
@@ -275,7 +283,28 @@ namespace Condolencia.Services
                                             endereco_estado = vitima.Estado,
                                             imagem = vitima.Fotografia
                                         }
-                                    }).Where(i => i.status == status).ToList();
+                                    }).Where(i => i.status == status).OrderByDescending(o => o.Id).ToList();
+
+                return await Task.FromResult(listMensagem);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<List<MensagemRegistrar>> GetQrCode()
+        {
+            try
+            {
+                var listMensagem = (from mensagem in _condolenciaContext.Mensagem
+                                    select new MensagemRegistrar
+                                    {
+                                        Id = mensagem.Id,
+                                        status = mensagem.Status,
+                                        texto = mensagem.Texto,
+                                        qrCode = mensagem.QrCode
+                                    }).Where(i => i.status == "Aprovado").OrderByDescending(o => o.Id).ToList();
 
                 return await Task.FromResult(listMensagem);
             }

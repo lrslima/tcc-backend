@@ -32,13 +32,13 @@ namespace Condolencia.Services
                 }
 
                 // RG caso informado será validado
-                if (!String.IsNullOrEmpty(vitimaViewModel.rg.Trim()))
-                {
-                    if (!Validacao.ValidaRG.IsRg(vitimaViewModel.rg.Trim()))
-                    {
-                        throw new Exception("RG da vítima informado é inválido");
-                    }
-                }
+                //if (!String.IsNullOrEmpty(vitimaViewModel.rg.Trim()))
+                //{
+                //    if (!Validacao.ValidaRG.IsRg(vitimaViewModel.rg.Trim()))
+                //    {
+                //        throw new Exception("RG da vítima informado é inválido");
+                //    }
+                //}
 
                 Vitima vitima = new Vitima();
                 vitima.Nome = vitimaViewModel.nome;

@@ -32,13 +32,13 @@ namespace Condolencia.Services
                 }
 
                 // RG caso informado será validado
-                if (!String.IsNullOrEmpty(pessoaViewModel.rg.Trim()))
-                {
-                    if (!Validacao.ValidaRG.IsRg(pessoaViewModel.rg.Trim()))
-                    {
-                        throw new Exception("RG do homenageante informado é inválido");
-                    }
-                }
+                //if (!String.IsNullOrEmpty(pessoaViewModel.rg.Trim()))
+                //{
+                //    if (!Validacao.ValidaRG.IsRg(pessoaViewModel.rg.Trim()))
+                //    {
+                //        throw new Exception("RG do homenageante informado é inválido");
+                //    }
+                //}
 
                 // E-mail caso informado será validado
                 if (!String.IsNullOrEmpty(pessoaViewModel.email.Trim()))

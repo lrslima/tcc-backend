@@ -29,5 +29,6 @@ namespace Condolencia.DTOs
 
         public VitimaViewModel Vitima { get; set; }
 
+        public Byte[] qrCode { get; set; }
     }
 }
