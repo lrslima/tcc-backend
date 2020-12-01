@@ -39,6 +39,19 @@ namespace Condolencia.Controllers
             return result;
         }
 
+        [HttpGet("QRcode")]
+        public async Task<ActionResult<List<MensagemRegistrar>>> GetQrCode()
+        {
+            var result = await _mensagemService.GetQrCode();
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return result;
+        }
+
         [HttpGet("id")]
         [Produces("application/json")]
         public async Task<ActionResult<MensagemRegistrar>> GetMensagem(int id)
