@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Condolencia.Data;
 using Condolencia.Models;
+using Condolencia.Interfaces;
+using Condolencia.DTOs;
 
 namespace Condolencia.Controllers
 {
@@ -15,10 +17,12 @@ namespace Condolencia.Controllers
     public class PessoasController : ControllerBase
     {
         private readonly CondolenciaContext _context;
+        private readonly IPessoaService _pessoaService;
 
-        public PessoasController(CondolenciaContext context)
+        public PessoasController(CondolenciaContext context, IPessoaService pessoaService)
         {
             _context = context;
+            _pessoaService = pessoaService;
         }
 
         // GET: api/Pessoas
@@ -76,12 +80,39 @@ namespace Condolencia.Controllers
         // POST: api/Pessoas
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Pessoa>> PostPessoa(Pessoa pessoa)
+        public async Task<ActionResult<PessoaViewModel>> PostPessoa(PessoaViewModel pessoaViewModel)
         {
-            _context.Pessoa.Add(pessoa);
-            await _context.SaveChangesAsync();
+            Pessoa pessoa = new Pessoa();
 
-            return CreatedAtAction("GetPessoa", new { id = pessoa.Id }, pessoa);
+            try
+            {
+                // Fazer validações
+                await _pessoaService.CadastrarPessoa(pessoaViewModel);
+                
+                if (pessoaViewModel.codigoErro == 0)
+                {
+                    // Salvar inclusão de Pessoa
+                    pessoa.Nome = pessoaViewModel.nome;
+                    pessoa.SobreNome = pessoaViewModel.sobrenome;
+                    pessoa.CPF = pessoaViewModel.cpf.Trim();
+                    pessoa.RG = pessoaViewModel.rg.Trim();
+                    pessoa.Email = pessoaViewModel.email;
+                    _context.Pessoa.Add(pessoa);
+                    await _context.SaveChangesAsync();
+                    return CreatedAtAction("GetPessoa", new { id = pessoa.Id }, pessoa);
+                }
+                else
+                {
+                    // Retornar dados inconsistentes
+                    return await Task.FromResult(pessoaViewModel);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromException<PessoaViewModel>(ex);
+            }
+
         }
 
         // DELETE: api/Pessoas/5

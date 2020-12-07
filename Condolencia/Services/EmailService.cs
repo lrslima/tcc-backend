@@ -44,7 +44,9 @@ namespace Condolencia.Services
                 };
 
                 mail.To.Add(new MailAddress(toEmail));
-                mail.CC.Add(new MailAddress(_emailSettings.CcEmail));
+
+                // Validar para onde será enviada um cópia
+                //mail.Bcc.Add(new MailAddress());
 
                 mail.Subject = subject;
                 mail.Body = message;

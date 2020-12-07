@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Condolencia.Data;
 using Condolencia.Models;
+using Condolencia.Interfaces;
+using Condolencia.DTOs;
 
 namespace Condolencia.Controllers
 {
@@ -15,10 +17,12 @@ namespace Condolencia.Controllers
     public class VitimasController : ControllerBase
     {
         private readonly CondolenciaContext _context;
+        private readonly IVitimaService _vitimaContext;
 
-        public VitimasController(CondolenciaContext context)
+        public VitimasController(CondolenciaContext context, IVitimaService vitimaService)
         {
             _context = context;
+            _vitimaContext = vitimaService;
         }
 
         // GET: api/Vitimas
@@ -76,12 +80,39 @@ namespace Condolencia.Controllers
         // POST: api/Vitimas
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Vitima>> PostVitima(Vitima vitima)
+        public async Task<ActionResult<VitimaViewModel>> PostVitima(VitimaViewModel vitimaViewModel)
         {
-            _context.Vitima.Add(vitima);
-            await _context.SaveChangesAsync();
+            Vitima vitima = new Vitima();
 
-            return CreatedAtAction("GetVitima", new { id = vitima.Id }, vitima);
+            try
+            {
+                // Fazer validações
+                await _vitimaContext.CadastrarVitima(vitimaViewModel);
+
+                if (vitimaViewModel.codigoErro == 0)
+                {
+                    vitima.Nome = vitimaViewModel.nome;
+                    vitima.SobreNome = vitimaViewModel.sobrenome;
+                    vitima.CPF = vitimaViewModel.cpf.Trim();
+                    vitima.RG = vitimaViewModel.rg.Trim();
+                    vitima.Rua = vitimaViewModel.endereco_rua;
+                    vitima.Cidade = vitimaViewModel.endereco_cidade;
+                    vitima.Estado = vitimaViewModel.endereco_estado;
+                    vitima.Fotografia = vitimaViewModel.imagem;
+                    _context.Vitima.Add(vitima);
+                    await _context.SaveChangesAsync();
+
+                    return CreatedAtAction("GetVitima", new { id = vitima.Id }, vitima);
+                }
+                else
+                {
+                    return await Task.FromResult(vitimaViewModel);
+                }
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromException<VitimaViewModel>(ex);
+            }
         }
 
         // DELETE: api/Vitimas/5

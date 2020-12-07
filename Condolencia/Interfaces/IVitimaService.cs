@@ -9,6 +9,6 @@ namespace Condolencia.Interfaces
 {
     public interface IVitimaService
     {
-        Task<Vitima> CadastrarVitima(VitimaViewModel vitimaViewModel);
+        Task<VitimaViewModel> CadastrarVitima(VitimaViewModel vitimaViewModel);
     }
 }

@@ -18,7 +18,7 @@ namespace Condolencia.Services
             _context = context;
         }
 
-        public async Task<Vitima> CadastrarVitima(VitimaViewModel vitimaViewModel)
+        public async Task<VitimaViewModel> CadastrarVitima(VitimaViewModel vitimaViewModel)
         {
             try
             {
@@ -27,7 +27,10 @@ namespace Condolencia.Services
                 {
                     if (!Validacao.ValidaCPF.IsCpf(vitimaViewModel.cpf.Trim()))
                     {
-                        throw new Exception("CPF da vítima informado é inválido");
+                        vitimaViewModel.codigoErro = 1;
+                        vitimaViewModel.mensagemErro = "CPF da vítima informado é inválido";
+                        return await Task.FromResult(vitimaViewModel);
+                        //throw new Exception("CPF da vítima informado é inválido");
                     }
                 }
 
@@ -50,11 +53,11 @@ namespace Condolencia.Services
                 vitima.Estado = vitimaViewModel.endereco_estado;
                 vitima.Fotografia = vitimaViewModel.imagem;
 
-                return await Task.FromResult(vitima);
+                return await Task.FromResult(vitimaViewModel);
             }
             catch (Exception ex)
             {
-                throw ex;
+                return await Task.FromException<VitimaViewModel>(ex);
             }
         }
     }

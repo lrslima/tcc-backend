@@ -18,16 +18,27 @@ namespace Condolencia.Services
             _context = context;
         }
 
-        public async Task<Pessoa> CadastrarPessoa(PessoaViewModel pessoaViewModel)
+        public async Task<PessoaViewModel> CadastrarPessoa(PessoaViewModel pessoaViewModel)
         {
             try
             {
+                if ((String.IsNullOrEmpty(pessoaViewModel.cpf.Trim())) && (String.IsNullOrEmpty(pessoaViewModel.rg.Trim())))
+                {
+                    pessoaViewModel.codigoErro = 1;
+                    pessoaViewModel.mensagemErro = "CPF ou RG do homenageante é obrigatório";
+                    return await Task.FromResult(pessoaViewModel);
+                    //throw new Exception("CPF ou RG do homenageante é obrigatório");
+                }
+
                 // CPF caso informado será validado
                 if (!String.IsNullOrEmpty(pessoaViewModel.cpf.Trim()))
                 {
                     if (!Validacao.ValidaCPF.IsCpf(pessoaViewModel.cpf.Trim()))
                     {
-                        throw new Exception("CPF do homenageante informado é inválido");
+                        pessoaViewModel.codigoErro = 2;
+                        pessoaViewModel.mensagemErro = "CPF do homenageante informado é inválido";
+                        return await Task.FromResult(pessoaViewModel);
+                        //throw new Exception("CPF do homenageante informado é inválido");
                     }
                 }
 
@@ -36,7 +47,10 @@ namespace Condolencia.Services
                 //{
                 //    if (!Validacao.ValidaRG.IsRg(pessoaViewModel.rg.Trim()))
                 //    {
-                //        throw new Exception("RG do homenageante informado é inválido");
+                //        pessoaViewModel.codigoErro = 3;
+                //        pessoaViewModel.mensagemErro = "RG do homenageante informado é inválido";
+                //        return await Task.FromResult(pessoaViewModel);
+                //        //throw new Exception("RG do homenageante informado é inválido");
                 //    }
                 //}
 
@@ -45,22 +59,18 @@ namespace Condolencia.Services
                 {
                     if (!Validacao.ValidaEmail.IsEmail(pessoaViewModel.email.Trim()))
                     {
-                        throw new Exception("E-mail informado é inválido");
+                        pessoaViewModel.codigoErro = 4;
+                        pessoaViewModel.mensagemErro = "E-mail informado é inválido";
+                        return await Task.FromResult(pessoaViewModel);
+                        //throw new Exception("E-mail informado é inválido");
                     }
                 }
 
-                Pessoa pessoa = new Pessoa();
-                pessoa.Nome = pessoaViewModel.nome;
-                pessoa.SobreNome = pessoaViewModel.sobrenome;
-                pessoa.CPF = pessoaViewModel.cpf.Trim();
-                pessoa.RG = pessoaViewModel.rg.Trim();
-                pessoa.Email = pessoaViewModel.email;
-
-                return await Task.FromResult(pessoa);
+                return await Task.FromResult(pessoaViewModel);
             }
             catch (Exception ex)
             {
-                throw ex;
+                return await Task.FromException<PessoaViewModel>(ex);
             }
         }
     }

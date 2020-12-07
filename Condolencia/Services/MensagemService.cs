@@ -32,13 +32,28 @@ namespace Condolencia.Services
 
         public async Task<MensagemRegistrar> RegistrarMensagem(MensagemRegistrar mensagemViewModel)
         {
+            Pessoa pessoa = new Pessoa();
+            Vitima vitima = new Vitima();
+            string assunto = "Mensagem entregue";
+            string htmlString = "";
+
             try
             {
                 // Inclusão da Pessoa que está registrando a condolência
-                var pessoa = await _pessoaService.CadastrarPessoa(mensagemViewModel.Pessoa);
+                await _pessoaService.CadastrarPessoa(mensagemViewModel.Pessoa);
+                if (mensagemViewModel.Pessoa.codigoErro > 0)
+                {
+                    // Retornar dados inconsistentes
+                    return await Task.FromResult(mensagemViewModel);
+                }
 
                 // Inclusão da Vítima que está sendo homenageada
-                var vitima = await _vitimaService.CadastrarVitima(mensagemViewModel.Vitima);
+                await _vitimaService.CadastrarVitima(mensagemViewModel.Vitima);
+                if (mensagemViewModel.Vitima.codigoErro > 0)
+                {
+                    // Retornar dados inconsistentes
+                    return await Task.FromResult(mensagemViewModel);
+                }
 
                 // Inclusão da mensagem
                 Mensagem mensagem = new Mensagem();
@@ -59,17 +74,85 @@ namespace Condolencia.Services
                 mensagem.QrCode = null;
 
                 // Salvar inclusão de Pessoa
-                _condolenciaContext.Add(pessoa);
-                _condolenciaContext.SaveChanges();
+                pessoa.Nome = mensagemViewModel.Pessoa.nome;
+                pessoa.SobreNome = mensagemViewModel.Pessoa.sobrenome;
+                pessoa.CPF = mensagemViewModel.Pessoa.cpf.Trim();
+                pessoa.RG = mensagemViewModel.Pessoa.rg.Trim();
+                pessoa.Email = mensagemViewModel.Pessoa.email;
+                _condolenciaContext.Pessoa.Add(pessoa);
+                await _condolenciaContext.SaveChangesAsync();
                 mensagem.IdPessoa = pessoa.Id;
 
                 // Salvar inclusão de Vítima
-                _condolenciaContext.Add(vitima);
-                _condolenciaContext.SaveChanges();
+                vitima.Nome = mensagemViewModel.Vitima.nome;
+                vitima.SobreNome = mensagemViewModel.Vitima.sobrenome;
+                vitima.CPF = mensagemViewModel.Vitima.cpf.Trim();
+                vitima.RG = mensagemViewModel.Vitima.rg.Trim();
+                vitima.Rua = mensagemViewModel.Vitima.endereco_rua;
+                vitima.Cidade = mensagemViewModel.Vitima.endereco_cidade;
+                vitima.Estado = mensagemViewModel.Vitima.endereco_estado;
+                vitima.Fotografia = mensagemViewModel.Vitima.imagem;
+                _condolenciaContext.Vitima.Add(vitima);
+                await _condolenciaContext.SaveChangesAsync();
                 mensagem.IdVitima = vitima.Id;
 
                 _condolenciaContext.Add(mensagem);
                 _condolenciaContext.SaveChanges();
+
+                // Enviar mensagem
+                htmlString = @"<!DOCTYPE html PUBLIC ' -//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>" + Environment.NewLine;
+                htmlString = htmlString + @"<html xmlns = 'http://www.w3.org/1999/xhtml'>" + Environment.NewLine;
+                htmlString = htmlString + @"    <head>" + Environment.NewLine;
+                htmlString = htmlString + @"        <meta http - equiv = 'Content -Type' content = 'text/html; charset=UTF-8' />" + Environment.NewLine;
+                htmlString = htmlString + @"    </head>" + Environment.NewLine;
+                htmlString = htmlString + @"    <body>" + Environment.NewLine;
+                htmlString = htmlString + @"        <table border = '0' cellpadding = '0' cellspacing = '0' height = '100%' width = '100%' id = 'bodyTable' style = 'font-family: Verdana, Arial, sans-serif;'>" + Environment.NewLine;
+                htmlString = htmlString + @"            <tr>" + Environment.NewLine;
+                htmlString = htmlString + @"                <td align = 'center' valign = 'top'>" + Environment.NewLine;
+                htmlString = htmlString + @"                    <table border = '0' cellpadding = '20' cellspacing = '0' width = '700' id = 'emailContainer'>" + Environment.NewLine;
+                htmlString = htmlString + @"                        <tr>" + Environment.NewLine;
+                htmlString = htmlString + @"                            <td align = 'center' valign = 'top'>" + Environment.NewLine;
+                htmlString = htmlString + @"                                <img src = 'https://memorialavarc.com.br/Images/logoPQ.png' alt = 'Avarc Logo' width = '150'>" + Environment.NewLine;
+                htmlString = htmlString + @"                            </td>" + Environment.NewLine;
+                htmlString = htmlString + @"                        </tr>" + Environment.NewLine;
+                htmlString = htmlString + @"                        <tr>" + Environment.NewLine;
+                htmlString = htmlString + @"                            <td align = 'center' valign = 'top' style = 'background-color: #2abcf7; padding: 30px 15px;'>" + Environment.NewLine;
+                htmlString = htmlString + @"                                <p style = 'color: #fff; font-weight: bold; font-size: 24px; margin: 0;'> Obrigado por deixar sua mensagem! </p>" + Environment.NewLine;
+                htmlString = htmlString + @"                            </td>" + Environment.NewLine;
+                htmlString = htmlString + @"                        </tr>" + Environment.NewLine;
+                htmlString = htmlString + @"                        <tr>" + Environment.NewLine;
+                htmlString = htmlString + @"                            <td align = 'center' valign = 'top' style = 'padding: 50px 0 0 0;'>" + Environment.NewLine;
+                htmlString = htmlString + @"                                <p style = 'color: #084069; font-weight: bold; font-size: 26px; margin: 0;'> Ol&aacute;, " + pessoa.Nome + " " + pessoa.SobreNome + @"! </p>" + Environment.NewLine;
+                htmlString = htmlString + @"                            </td>" + Environment.NewLine;
+                htmlString = htmlString + @"                        </tr>" + Environment.NewLine;
+                htmlString = htmlString + @"                        <tr>" + Environment.NewLine;
+                htmlString = htmlString + @"                            <td align = 'center' valign = 'top' style = 'padding: 50px;'>" + Environment.NewLine;
+                htmlString = htmlString + @"                                <p style = 'font-size: 15px; line-height: 20px; padding-bottom: 35px; margin: 0;'>Falta muito pouco para que sua condol&ecirc;ncia seja publicada. </br>" + Environment.NewLine;
+                htmlString = htmlString + @"Nesse momento, ela est&aacute; sob an&aacute;lise dos nossos moderadores. </br>" + Environment.NewLine;
+                htmlString = htmlString + @"Em breve concluiremos a an&aacute;lise e voc^&ecirc; poder&aacute;´compartilh&aacute;-la </br>" + Environment.NewLine;
+                htmlString = htmlString + @"com seus familiares e amigos. </p>" + Environment.NewLine;
+                htmlString = htmlString + @"                            </td>" + Environment.NewLine;
+                htmlString = htmlString + @"                        </tr>" + Environment.NewLine;
+                htmlString = htmlString + @"                        <tr>" + Environment.NewLine;
+                htmlString = htmlString + @"                            <td align = 'center' valign = 'top' style = 'background-color: #f8f8f8; padding: 50px 15px;'>" + Environment.NewLine;
+                htmlString = htmlString + @"                                <p style = 'color: #395b77; font-size: 18px; margin: 0; display: inline-block; vertical-align: middle;'> Status da Condol&ecirc;ncia: </p>" + Environment.NewLine;
+                htmlString = htmlString + @"                                <p style = 'color: #084069; font-weight: bold; font-size: 21px; margin: 0; display: inline-block; vertical-align: middle;'> Pendente </p>" + Environment.NewLine;
+                htmlString = htmlString + @"                            </td>" + Environment.NewLine;
+                htmlString = htmlString + @"                        </tr>" + Environment.NewLine;
+                htmlString = htmlString + @"                        <tr>" + Environment.NewLine;
+                htmlString = htmlString + @"                            <td align = 'center' valign = 'top' style = 'padding: 50px 0 20px 0;'>" + Environment.NewLine;
+                htmlString = htmlString + @"                                <p style = 'font-size: 14px; margin: 0; margin-bottom: 5px;'> Abra&ccedil;os,</p>" + Environment.NewLine;
+                htmlString = htmlString + @"                                <p style = 'font-size: 14px; margin: 0;'> Equipe memorial Avarc</p>" + Environment.NewLine;
+                htmlString = htmlString + @"                            </td>" + Environment.NewLine;
+                htmlString = htmlString + @"                        </tr>" + Environment.NewLine;
+                htmlString = htmlString + @"                    </table>" + Environment.NewLine;
+                htmlString = htmlString + @"                </td>" + Environment.NewLine;
+                htmlString = htmlString + @"            </tr>" + Environment.NewLine;
+                htmlString = htmlString + @"        </table>" + Environment.NewLine;
+                htmlString = htmlString + @"    </body>" + Environment.NewLine;
+                htmlString = htmlString + @"</html> ";
+
+                await _emailService.SendEmailAsync(pessoa.Email, assunto, htmlString);
 
                 var retorno = await GetMensagem(mensagem.Id);
                 return await Task.FromResult(retorno);
@@ -107,25 +190,119 @@ namespace Condolencia.Services
                     imagemCode = QRCodeService.GenerateByteArray(urlCondolencia);
                     imagemQRcode = QRCodeService.GenerateImage(urlCondolencia);
                     stringBase64 = Convert.ToBase64String(imagemCode);
-                    htmlString = @"<html>
-                      <body>
-                      <p>Olá " + pessoa.Nome + " " + pessoa.SobreNome + @"</p>
-                      <p>Sua condolência foi aprovada e já está publicada. Você poderá acessar a condolência através deste QR code.</p>
-                      <p><br><img src= 'https://www.opememorial.net/api/QRCode/IdCondolencia?idCondolencia=" + mensagemModeradaViewModel.IdMensagem + @"' class='CToWUd a6T' tabindex='0'/></br></p>
-                      <p>Caso não consiga ler o QR code, poderá acessar a condolência clicando <a href='https://avarc.vercel.app/condolencia/" + mensagemModeradaViewModel.IdMensagem + @"'> neste link</a></p>                      
-                      </body>
-                      </html>
-                     ";
+                    htmlString = @"<!DOCTYPE html PUBLIC ' -//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>" + Environment.NewLine;
+                    htmlString = htmlString + @"<html xmlns = 'http://www.w3.org/1999/xhtml'>" + Environment.NewLine;
+                    htmlString = htmlString + @"    <head>" + Environment.NewLine;
+                    htmlString = htmlString + @"        <meta http - equiv = 'Content -Type' content = 'text/html; charset=UTF-8' />" + Environment.NewLine;
+                    htmlString = htmlString + @"    </head>" + Environment.NewLine;
+                    htmlString = htmlString + @"    <body>" + Environment.NewLine;
+                    htmlString = htmlString + @"        <table border = '0' cellpadding = '0' cellspacing = '0' height = '100%' width = '100%' id = 'bodyTable' style = 'font-family: Verdana, Arial, sans-serif;'>" + Environment.NewLine;
+                    htmlString = htmlString + @"            <tr>" + Environment.NewLine;
+                    htmlString = htmlString + @"                <td align = 'center' valign = 'top'>" + Environment.NewLine;
+                    htmlString = htmlString + @"                    <table border = '0' cellpadding = '20' cellspacing = '0' width = '700' id = 'emailContainer'>" + Environment.NewLine;
+                    htmlString = htmlString + @"                        <tr>" + Environment.NewLine;
+                    htmlString = htmlString + @"                            <td align = 'center' valign = 'top'>" + Environment.NewLine;
+                    htmlString = htmlString + @"                                <img src = 'https://memorialavarc.com.br/Images/logoPQ.png' alt = 'Avarc Logo' width = '150'>" + Environment.NewLine;
+                    htmlString = htmlString + @"                            </td>" + Environment.NewLine;
+                    htmlString = htmlString + @"                        </tr>" + Environment.NewLine;
+                    htmlString = htmlString + @"                        <tr>" + Environment.NewLine;
+                    htmlString = htmlString + @"                            <td align = 'center' valign = 'top' style = 'background-color: #2abcf7; padding: 30px 15px;'>" + Environment.NewLine;
+                    htmlString = htmlString + @"                                <p style = 'color: #fff; font-weight: bold; font-size: 24px; margin: 0;'> Sua mensagem foi aprovada! </p>" + Environment.NewLine;
+                    htmlString = htmlString + @"                            </td>" + Environment.NewLine;
+                    htmlString = htmlString + @"                        </tr>" + Environment.NewLine;
+                    htmlString = htmlString + @"                        <tr>" + Environment.NewLine;
+                    htmlString = htmlString + @"                            <td align = 'center' valign = 'top' style = 'padding: 50px 0 0 0;'>" + Environment.NewLine;
+                    htmlString = htmlString + @"                                <p style = 'color: #084069; font-weight: bold; font-size: 26px; margin: 0;'> Ol&aacute;, " + pessoa.Nome + " " + pessoa.SobreNome + @"! </p>" + Environment.NewLine;
+                    htmlString = htmlString + @"                            </td>" + Environment.NewLine;
+                    htmlString = htmlString + @"                        </tr>" + Environment.NewLine;
+                    htmlString = htmlString + @"                        <tr>" + Environment.NewLine;
+                    htmlString = htmlString + @"                            <td align = 'center' valign = 'top' style = 'padding: 50px;'>" + Environment.NewLine;
+                    htmlString = htmlString + @"                                <p style = 'font-size: 15px; line-height: 20px; padding-bottom: 35px; margin: 0;'>Sua condol&ecirc;ncia foi aprovada e publicada. </br>Para acessar, clique no link abaixo:</p>" + Environment.NewLine;
+                    htmlString = htmlString + @"                                <a href='https://avarc.vercel.app/condolencia/" + mensagemModeradaViewModel.IdMensagem + @"' target = '_blank' style = 'color: #474cdc; font-size: 14px;'> Link da Condol&ecirc;ncia</a>" + Environment.NewLine;
+                    htmlString = htmlString + @"                            </td>" + Environment.NewLine;
+                    htmlString = htmlString + @"                        </tr>" + Environment.NewLine;
+                    htmlString = htmlString + @"                        <tr>" + Environment.NewLine;
+                    htmlString = htmlString + @"                            <td align = 'center' valign = 'top' style = 'background-color: #f8f8f8; padding: 50px 15px;'>" + Environment.NewLine;
+                    htmlString = htmlString + @"                                <p style = 'color: #395b77; font-size: 18px; margin: 0; display: inline-block; vertical-align: middle;'> Status da Condol&ecirc;ncia: </p>" + Environment.NewLine;
+                    htmlString = htmlString + @"                                <p style = 'color: #084069; font-weight: bold; font-size: 21px; margin: 0; display: inline-block; vertical-align: middle;'> Aprovada </p>" + Environment.NewLine;
+                    htmlString = htmlString + @"                            </td>" + Environment.NewLine;
+                    htmlString = htmlString + @"                        </tr>" + Environment.NewLine;
+                    htmlString = htmlString + @"                        <tr>" + Environment.NewLine;
+                    htmlString = htmlString + @"                            <td align = 'center' valign = 'top' style = 'padding: 50px 0 20px 0;'>" + Environment.NewLine;
+                    htmlString = htmlString + @"                                <p style = 'font-size: 14px; margin: 0; margin-bottom: 5px;'> Abra&ccedil;os,</p>" + Environment.NewLine;
+                    htmlString = htmlString + @"                                <p style = 'font-size: 14px; margin: 0;'> Equipe memorial Avarc</p>" + Environment.NewLine;
+                    htmlString = htmlString + @"                            </td>" + Environment.NewLine;
+                    htmlString = htmlString + @"                        </tr>" + Environment.NewLine;
+                    htmlString = htmlString + @"                    </table>" + Environment.NewLine;
+                    htmlString = htmlString + @"                </td>" + Environment.NewLine;
+                    htmlString = htmlString + @"            </tr>" + Environment.NewLine;
+                    htmlString = htmlString + @"        </table>" + Environment.NewLine;
+                    htmlString = htmlString + @"    </body>" + Environment.NewLine;
+                    htmlString = htmlString + @"</html> ";
+
+                    //htmlString = @" < html>
+                    //  <body>
+                    //  <p>Olá " + pessoa.Nome + " " + pessoa.SobreNome + @"</p>
+                    //  <p>Sua condolência foi aprovada e já está publicada. Você poderá acessar a condolência através deste QR code.</p>
+                    //  <p><br><img src= 'https://www.opememorial.net/api/QRCode/IdCondolencia?idCondolencia=" + mensagemModeradaViewModel.IdMensagem + @"' class='CToWUd a6T' tabindex='0'/></br></p>
+                    //  <p>Caso não consiga ler o QR code, poderá acessar a condolência clicando <a href='https://avarc.vercel.app/condolencia/" + mensagemModeradaViewModel.IdMensagem + @"'> neste link</a></p>                      
+                    //  </body>
+                    //  </html>
+                    // ";
                 }
                 else
                 {
-                    htmlString = @"<html>
-                      <body>
-                      <p>Olá " + pessoa.Nome + " " + pessoa.SobreNome + @"</p>
-                      <p>Sua condolência foi reprovada e não poderá ser publicada.</p>
-                      </body>
-                      </html>
-                     ";
+                    htmlString = @"<!DOCTYPE html PUBLIC ' -//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>" + Environment.NewLine;
+                    htmlString = htmlString + @"<html xmlns = 'http://www.w3.org/1999/xhtml'>" + Environment.NewLine;
+                    htmlString = htmlString + @"    <head>" + Environment.NewLine;
+                    htmlString = htmlString + @"        <meta http - equiv = 'Content -Type' content = 'text/html; charset=UTF-8' />" + Environment.NewLine;
+                    htmlString = htmlString + @"    </head>" + Environment.NewLine;
+                    htmlString = htmlString + @"    <body>" + Environment.NewLine;
+                    htmlString = htmlString + @"        <table border = '0' cellpadding = '0' cellspacing = '0' height = '100%' width = '100%' id = 'bodyTable' style = 'font-family: Verdana, Arial, sans-serif;'>" + Environment.NewLine;
+                    htmlString = htmlString + @"            <tr>" + Environment.NewLine;
+                    htmlString = htmlString + @"                <td align = 'center' valign = 'top'>" + Environment.NewLine;
+                    htmlString = htmlString + @"                    <table border = '0' cellpadding = '20' cellspacing = '0' width = '700' id = 'emailContainer'>" + Environment.NewLine;
+                    htmlString = htmlString + @"                        <tr>" + Environment.NewLine;
+                    htmlString = htmlString + @"                            <td align = 'center' valign = 'top'>" + Environment.NewLine;
+                    htmlString = htmlString + @"                                <img src = 'https://memorialavarc.com.br/Images/logoPQ.png' alt = 'Avarc Logo' width = '150'>" + Environment.NewLine;
+                    htmlString = htmlString + @"                            </td>" + Environment.NewLine;
+                    htmlString = htmlString + @"                        </tr>" + Environment.NewLine;
+                    htmlString = htmlString + @"                        <tr>" + Environment.NewLine;
+                    htmlString = htmlString + @"                            <td align = 'center' valign = 'top' style = 'background-color: #2abcf7; padding: 30px 15px;'>" + Environment.NewLine;
+                    htmlString = htmlString + @"                                <p style = 'color: #fff; font-weight: bold; font-size: 24px; margin: 0;'> Sua mensagem foi reprovada! </p>" + Environment.NewLine;
+                    htmlString = htmlString + @"                            </td>" + Environment.NewLine;
+                    htmlString = htmlString + @"                        </tr>" + Environment.NewLine;
+                    htmlString = htmlString + @"                        <tr>" + Environment.NewLine;
+                    htmlString = htmlString + @"                            <td align = 'center' valign = 'top' style = 'padding: 50px 0 0 0;'>" + Environment.NewLine;
+                    htmlString = htmlString + @"                                <p style = 'color: #084069; font-weight: bold; font-size: 26px; margin: 0;'> Ol&aacute;, " + pessoa.Nome + " " + pessoa.SobreNome + @"! </p>" + Environment.NewLine;
+                    htmlString = htmlString + @"                            </td>" + Environment.NewLine;
+                    htmlString = htmlString + @"                        </tr>" + Environment.NewLine;
+                    htmlString = htmlString + @"                        <tr>" + Environment.NewLine;
+                    htmlString = htmlString + @"                            <td align = 'center' valign = 'top' style = 'padding: 50px;'>" + Environment.NewLine;
+                    htmlString = htmlString + @"                                <p style = 'font-size: 15px; line-height: 20px; padding-bottom: 35px; margin: 0;'>Infelizmente n&atilde;o conseguimos publicar sua mensagem. </br>" + Environment.NewLine;
+                    htmlString = htmlString + @"Ela pode conter palavras ofensivas ou conte&uacute;do inapropriado. </br>" + Environment.NewLine;
+                    htmlString = htmlString + @"Fique tranquilo(a). Voc&ecirc; pode enviar uma nova condol&ecirc;ncia, mas </br>" + Environment.NewLine;
+                    htmlString = htmlString + @"evite conte&uacute;dos sens&iacute;veis para sua mensagem n&atilde;o ser reprovada. </p>" + Environment.NewLine;
+                    htmlString = htmlString + @"                            </td>" + Environment.NewLine;
+                    htmlString = htmlString + @"                        </tr>" + Environment.NewLine;
+                    htmlString = htmlString + @"                        <tr>" + Environment.NewLine;
+                    htmlString = htmlString + @"                            <td align = 'center' valign = 'top' style = 'background-color: #f8f8f8; padding: 50px 15px;'>" + Environment.NewLine;
+                    htmlString = htmlString + @"                                <p style = 'color: #395b77; font-size: 18px; margin: 0; display: inline-block; vertical-align: middle;'> Status da Condol&ecirc;ncia: </p>" + Environment.NewLine;
+                    htmlString = htmlString + @"                                <p style = 'color: #084069; font-weight: bold; font-size: 21px; margin: 0; display: inline-block; vertical-align: middle;'> Reprovada </p>" + Environment.NewLine;
+                    htmlString = htmlString + @"                            </td>" + Environment.NewLine;
+                    htmlString = htmlString + @"                        </tr>" + Environment.NewLine;
+                    htmlString = htmlString + @"                        <tr>" + Environment.NewLine;
+                    htmlString = htmlString + @"                            <td align = 'center' valign = 'top' style = 'padding: 50px 0 20px 0;'>" + Environment.NewLine;
+                    htmlString = htmlString + @"                                <p style = 'font-size: 14px; margin: 0; margin-bottom: 5px;'> Abra&ccedil;os,</p>" + Environment.NewLine;
+                    htmlString = htmlString + @"                                <p style = 'font-size: 14px; margin: 0;'> Equipe memorial Avarc</p>" + Environment.NewLine;
+                    htmlString = htmlString + @"                            </td>" + Environment.NewLine;
+                    htmlString = htmlString + @"                        </tr>" + Environment.NewLine;
+                    htmlString = htmlString + @"                    </table>" + Environment.NewLine;
+                    htmlString = htmlString + @"                </td>" + Environment.NewLine;
+                    htmlString = htmlString + @"            </tr>" + Environment.NewLine;
+                    htmlString = htmlString + @"        </table>" + Environment.NewLine;
+                    htmlString = htmlString + @"    </body>" + Environment.NewLine;
+                    htmlString = htmlString + @"</html> ";
                 }
 
                 // alterar status e incluir o QR code na tabela mensagem 

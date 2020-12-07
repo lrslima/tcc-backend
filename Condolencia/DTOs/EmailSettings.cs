@@ -13,6 +13,6 @@ namespace Condolencia.DTO
         public String UsernamePassword { get; set; }
         public String FromEmail { get; set; }
         public String ToEmail { get; set; }
-        public String CcEmail { get; set; }
+        public String BccEmail { get; set; }
     }
 }

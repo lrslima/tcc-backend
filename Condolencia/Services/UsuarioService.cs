@@ -51,7 +51,7 @@ namespace Condolencia.Services
                 }
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return Task.FromResult(false);
             }
@@ -94,11 +94,11 @@ namespace Condolencia.Services
                                            i.Senha == senha).ToList().FirstOrDefault();
 
                 UsuarioViewModel usuarioRet = new UsuarioViewModel();
-                usuarioRet.id = listUser.Id;
-                usuarioRet.Nome = listUser.Nome;
 
                 if (listUser != null)
                 {
+                    usuarioRet.id = listUser.Id;
+                    usuarioRet.Nome = listUser.Nome;
                     usuarioRet.Autorizado = true;
                 }
                 else
