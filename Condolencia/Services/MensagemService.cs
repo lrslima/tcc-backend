@@ -129,7 +129,7 @@ namespace Condolencia.Services
                 htmlString = htmlString + @"                            <td align = 'center' valign = 'top' style = 'padding: 50px;'>" + Environment.NewLine;
                 htmlString = htmlString + @"                                <p style = 'font-size: 15px; line-height: 20px; padding-bottom: 35px; margin: 0;'>Falta muito pouco para que sua condol&ecirc;ncia seja publicada. </br>" + Environment.NewLine;
                 htmlString = htmlString + @"Nesse momento, ela est&aacute; sob an&aacute;lise dos nossos moderadores. </br>" + Environment.NewLine;
-                htmlString = htmlString + @"Em breve concluiremos a an&aacute;lise e voc^&ecirc; poder&aacute;´compartilh&aacute;-la </br>" + Environment.NewLine;
+                htmlString = htmlString + @"Em breve concluiremos a an&aacute;lise e voc&ecirc; poder&aacute; compartilh&aacute;-la </br>" + Environment.NewLine;
                 htmlString = htmlString + @"com seus familiares e amigos. </p>" + Environment.NewLine;
                 htmlString = htmlString + @"                            </td>" + Environment.NewLine;
                 htmlString = htmlString + @"                        </tr>" + Environment.NewLine;
