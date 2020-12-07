@@ -1,0 +1,294 @@
+--
+-- Estrutura da tabela `Mensagem`
+--
+
+DROP TABLE IF EXISTS `Mensagem`;
+CREATE TABLE `Mensagem` (
+  `Id` int(11) NOT NULL,
+  `IdPessoa` int(11) NOT NULL,
+  `IdVitima` int(11) NOT NULL,
+  `Texto` mediumtext COLLATE latin1_general_ci NOT NULL,
+  `Status` varchar(255) COLLATE latin1_general_ci DEFAULT NULL,
+  `Sentimento` varchar(255) COLLATE latin1_general_ci DEFAULT NULL,
+  `Privacidade` int(11) DEFAULT NULL,
+  `QrCode` longblob,
+  `DataCriacao` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `PoliticaPrivacidade` tinyint(1) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci
+
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `MensagemModerada`
+--
+
+DROP TABLE IF EXISTS `MensagemModerada`;
+CREATE TABLE `MensagemModerada` (
+  `Id` int(11) NOT NULL,
+  `IdMensagem` int(11) NOT NULL,
+  `DataAcao` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `Status` longtext CHARACTER SET utf8mb4 NOT NULL,
+  `IdAlteradoPor` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+
+--
+-- Extraindo dados da tabela `MensagemModerada`
+--
+
+--
+-- Estrutura da tabela `Pessoa`
+--
+
+DROP TABLE IF EXISTS `Pessoa`;
+CREATE TABLE `Pessoa` (
+  `Id` int(11) NOT NULL,
+  `Nome` longtext CHARACTER SET utf8mb4,
+  `SobreNome` longtext CHARACTER SET utf8mb4,
+  `CPF` longtext CHARACTER SET utf8mb4,
+  `RG` longtext CHARACTER SET utf8mb4,
+  `Email` longtext CHARACTER SET utf8mb4
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+
+--
+-- Estrutura da tabela `Privacidade`
+--
+
+DROP TABLE IF EXISTS `Privacidade`;
+CREATE TABLE `Privacidade` (
+  `Id` int(11) NOT NULL,
+  `Descricao` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
+  `Ativo` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+
+--
+-- Extraindo dados da tabela `Privacidade`
+--
+
+INSERT INTO `Privacidade` (`Id`, `Descricao`, `Ativo`) VALUES
+(1, 'Sigilosa', 1),
+(2, 'Sigilosa - Somente o texto será colocado na cápsula do tempo sem identificação de sua autoria', 1),
+(3, 'Parcialmente pública - Será relevado o seu conteúdo e autoria daqui dez anos', 1),
+(4, 'Pública - Constará no blog do projeto em memória das vítimas do COVID-19', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `Sentimento`
+--
+
+DROP TABLE IF EXISTS `Sentimento`;
+CREATE TABLE `Sentimento` (
+  `Id` int(11) NOT NULL,
+  `Descricao` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
+  `Ativo` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+
+--
+-- Indexes for table `Sentimento`
+--
+ALTER TABLE `Sentimento`
+  ADD PRIMARY KEY (`Id`);
+
+--
+-- AUTO_INCREMENT for table `Sentimento`
+--
+ALTER TABLE `Sentimento`
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
+
+INSERT INTO `Sentimento` (`Id`, `Descricao`, `Ativo`) VALUES (NULL, 'Boas lembranças', '1');
+INSERT INTO `Sentimento` (`Id`, `Descricao`, `Ativo`) VALUES (NULL, 'Saudades', '1');
+INSERT INTO `Sentimento` (`Id`, `Descricao`, `Ativo`) VALUES (NULL, 'Fé', '1');
+INSERT INTO `Sentimento` (`Id`, `Descricao`, `Ativo`) VALUES (NULL, 'Esperança', '1');
+INSERT INTO `Sentimento` (`Id`, `Descricao`, `Ativo`) VALUES (NULL, 'Inconformismo', '1');
+INSERT INTO `Sentimento` (`Id`, `Descricao`, `Ativo`) VALUES (NULL, 'Pesar', '1');
+INSERT INTO `Sentimento` (`Id`, `Descricao`, `Ativo`) VALUES (NULL, 'Outros sentimentos', '1');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `Status`
+--
+
+DROP TABLE IF EXISTS `Status`;
+CREATE TABLE `Status` (
+  `Id` int(11) NOT NULL,
+  `Descricao` varchar(50) CHARACTER SET utf8mb4 NOT NULL,
+  `Ativo` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+
+--
+-- Extraindo dados da tabela `Status`
+--
+
+INSERT INTO `Status` (`Id`, `Descricao`, `Ativo`) VALUES
+(1, 'Pendente', 1),
+(2, 'Aprovado', 1),
+(3, 'Reprovado', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `Usuario`
+--
+
+DROP TABLE IF EXISTS `Usuario`;
+CREATE TABLE `Usuario` (
+  `Id` int(11) NOT NULL,
+  `TipoUsuario` int(1) NOT NULL,
+  `Nome` varchar(100) CHARACTER SET utf8mb4 NOT NULL,
+  `Sobrenome` varchar(100) CHARACTER SET utf8mb4 NOT NULL,
+  `Email` varchar(100) CHARACTER SET utf8mb4 NOT NULL,
+  `Ativo` int(11) NOT NULL,
+  `Senha` varchar(100) CHARACTER SET utf8mb4 NOT NULL,
+  `ConfirmarSenha` longtext CHARACTER SET utf8mb4
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+
+--
+-- Extraindo dados da tabela `Usuario`
+--
+
+INSERT INTO `Usuario` (`Id`, `TipoUsuario`, `Nome`, `Sobrenome`, `Email`, `Ativo`, `Senha`, `ConfirmarSenha`) VALUES
+(1, 1, 'Admin', 'Teste', 'admin@teste.com', 1, 'admin@123', 'admin@123'),
+(13, 2, 'barbaraArao', '', 'barbara.arao@aluno.faculdadeimpacta.com.br', 1, '123456', '123456');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `Vitima`
+--
+
+DROP TABLE IF EXISTS `Vitima`;
+CREATE TABLE `Vitima` (
+  `Id` int(11) NOT NULL,
+  `Nome` longtext CHARACTER SET utf8mb4,
+  `SobreNome` longtext CHARACTER SET utf8mb4,
+  `CPF` longtext CHARACTER SET utf8mb4,
+  `RG` longtext CHARACTER SET utf8mb4,
+  `Rua` longtext CHARACTER SET utf8mb4,
+  `Cidade` longtext CHARACTER SET utf8mb4,
+  `Estado` longtext CHARACTER SET utf8mb4,
+  `Fotografia` longblob
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `__EFMigrationsHistory`
+--
+
+DROP TABLE IF EXISTS `__EFMigrationsHistory`;
+CREATE TABLE `__EFMigrationsHistory` (
+  `MigrationId` varchar(95) COLLATE latin1_general_ci NOT NULL,
+  `ProductVersion` varchar(32) COLLATE latin1_general_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+
+--
+-- Extraindo dados da tabela `__EFMigrationsHistory`
+--
+
+INSERT INTO `__EFMigrationsHistory` (`MigrationId`, `ProductVersion`) VALUES
+('20201121183834_InitialCreate', '3.1.10');
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `Mensagem`
+--
+ALTER TABLE `Mensagem`
+  ADD PRIMARY KEY (`Id`);
+
+--
+-- Indexes for table `MensagemModerada`
+--
+ALTER TABLE `MensagemModerada`
+  ADD PRIMARY KEY (`Id`),
+  ADD KEY `MensagemModerada_ibfk_1` (`IdAlteradoPor`);
+
+--
+-- Indexes for table `Pessoa`
+--
+ALTER TABLE `Pessoa`
+  ADD PRIMARY KEY (`Id`);
+
+--
+-- Indexes for table `Privacidade`
+--
+ALTER TABLE `Privacidade`
+  ADD PRIMARY KEY (`Id`);
+
+--
+-- Indexes for table `Status`
+--
+ALTER TABLE `Status`
+  ADD PRIMARY KEY (`Id`);
+
+--
+-- Indexes for table `Usuario`
+--
+ALTER TABLE `Usuario`
+  ADD PRIMARY KEY (`Id`);
+
+--
+-- Indexes for table `Vitima`
+--
+ALTER TABLE `Vitima`
+  ADD PRIMARY KEY (`Id`);
+
+--
+ALTER TABLE `Mensagem`
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `MensagemModerada`
+--
+ALTER TABLE `MensagemModerada`
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `Pessoa`
+--
+ALTER TABLE `Pessoa`
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `Privacidade`
+--
+ALTER TABLE `Privacidade`
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `Status`
+--
+ALTER TABLE `Status`
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `Usuario`
+--
+ALTER TABLE `Usuario`
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `Vitima`
+--
+ALTER TABLE `Vitima`
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Limitadores para a tabela `MensagemModerada`
+--
+ALTER TABLE `MensagemModerada`
+  ADD CONSTRAINT `MensagemModerada_ibfk_1` FOREIGN KEY (`IdAlteradoPor`) REFERENCES `Usuario` (`Id`) ON UPDATE CASCADE;
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
