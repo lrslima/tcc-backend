@@ -23,7 +23,7 @@ namespace Condolencia.Models
         public int IdVitima { get; set; }
 
         [Required]
-        [MaxLength(255), MinLength(3)]
+        [MinLength(3)]
         public string Texto { get; set; }
 
         public string Status { get; set; }

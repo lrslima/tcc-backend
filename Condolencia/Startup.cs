@@ -34,11 +34,13 @@ namespace Condolencia
             services.AddCors();
 
             services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
-            services.AddScoped<IMensagemService, MensagemService>();
             services.AddScoped<IPessoaService, PessoaService>();
             services.AddScoped<IVitimaService, VitimaService>();
             services.AddScoped<IUsuarioService, UsuarioService>();
+            services.AddScoped<IMensagemService, MensagemService>();
             services.AddScoped<IMensagemModeradaService, MensagemModeradaService>();
+            services.AddScoped<IDepoimentoService, DepoimentoService>();
+            services.AddScoped<IDepoimentoModeradoService, DepoimentoModeradoService>();
             services.AddScoped<IEmailService, EmailService>();
 
             services.AddControllers();

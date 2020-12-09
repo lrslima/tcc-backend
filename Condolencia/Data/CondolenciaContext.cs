@@ -29,5 +29,9 @@ namespace Condolencia.Data
         public DbSet<Condolencia.Models.MensagemModerada> MensagemModerada { get; set; }
 
         public DbSet<Condolencia.Models.Mensagem> Mensagem { get; set; }
+
+        public DbSet<Condolencia.Models.DepoimentoModerado> DepoimentoModerado { get; set; }
+
+        public DbSet<Condolencia.Models.Depoimento> Depoimento { get; set; }
     }
 }

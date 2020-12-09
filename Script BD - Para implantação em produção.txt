@@ -1,8 +1,6 @@
 --
 -- Estrutura da tabela `Mensagem`
 --
-
-DROP TABLE IF EXISTS `Mensagem`;
 CREATE TABLE `Mensagem` (
   `Id` int(11) NOT NULL,
   `IdPessoa` int(11) NOT NULL,
@@ -14,7 +12,45 @@ CREATE TABLE `Mensagem` (
   `QrCode` longblob,
   `DataCriacao` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `PoliticaPrivacidade` tinyint(1) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+--
+-- Indexes for table `Mensagem`
+--
+ALTER TABLE `Mensagem`
+  ADD PRIMARY KEY (`Id`);
+--
+ALTER TABLE `Mensagem`
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
+
+
+CREATE TABLE `Depoimento` (
+  `Id` int(11) NOT NULL,
+  `DataCriacao` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `Nome` longtext CHARACTER SET utf8mb4,
+  `SobreNome` longtext CHARACTER SET utf8mb4,
+  `CPF` longtext CHARACTER SET utf8mb4,
+  `RG` longtext CHARACTER SET utf8mb4,
+  `Rua` longtext CHARACTER SET utf8mb4,
+  `Cidade` longtext CHARACTER SET utf8mb4,
+  `Estado` longtext CHARACTER SET utf8mb4,
+  `Profissao` longtext CHARACTER SET utf8mb4,
+  `Email` longtext CHARACTER SET utf8mb4,
+  `Sentimento` varchar(255) COLLATE latin1_general_ci DEFAULT NULL,
+  `Privacidade` int(11) DEFAULT NULL,
+  `PoliticaPrivacidade` tinyint(1) DEFAULT NULL,
+  `Fotografia` longblob,
+  `Texto` mediumtext COLLATE latin1_general_ci NOT NULL,
+  `Status` varchar(255) COLLATE latin1_general_ci DEFAULT NULL,
+  `QrCode` longblob
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+--
+-- Indexes for table `Depoimento`
+--
+ALTER TABLE `Depoimento`
+  ADD PRIMARY KEY (`Id`);
+--
+ALTER TABLE `Depoimento`
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
 
 
 -- --------------------------------------------------------
@@ -22,8 +58,6 @@ CREATE TABLE `Mensagem` (
 --
 -- Estrutura da tabela `MensagemModerada`
 --
-
-DROP TABLE IF EXISTS `MensagemModerada`;
 CREATE TABLE `MensagemModerada` (
   `Id` int(11) NOT NULL,
   `IdMensagem` int(11) NOT NULL,
@@ -31,10 +65,49 @@ CREATE TABLE `MensagemModerada` (
   `Status` longtext CHARACTER SET utf8mb4 NOT NULL,
   `IdAlteradoPor` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+--
+-- Indexes for table `MensagemModerada`
+--
+ALTER TABLE `MensagemModerada`
+  ADD PRIMARY KEY (`Id`),
+  ADD KEY `MensagemModerada_ibfk_1` (`IdAlteradoPor`);
+--
+-- AUTO_INCREMENT for table `MensagemModerada`
+--
+ALTER TABLE `MensagemModerada`
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- Limitadores para a tabela `MensagemModerada`
+--
+ALTER TABLE `MensagemModerada`
+  ADD CONSTRAINT `MensagemModerada_ibfk_1` FOREIGN KEY (`IdAlteradoPor`) REFERENCES `Usuario` (`Id`) ON UPDATE CASCADE;
 
 --
--- Extraindo dados da tabela `MensagemModerada`
+-- Estrutura da tabela `DepoimentoModerado`
 --
+CREATE TABLE `DepoimentoModerado` (
+  `Id` int(11) NOT NULL,
+  `IdDepoimento` int(11) NOT NULL,
+  `DataAcao` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `Status` longtext CHARACTER SET utf8mb4 NOT NULL,
+  `IdAlteradoPor` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+--
+-- Indexes for table `DepoimentoModerado`
+--
+ALTER TABLE `DepoimentoModerado`
+  ADD PRIMARY KEY (`Id`),
+  ADD KEY `DepoimentoModerado_ibfk_1` (`IdAlteradoPor`);
+--
+-- AUTO_INCREMENT for table `DepoimentoModerado`
+--
+ALTER TABLE `DepoimentoModerado`
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- Limitadores para a tabela `DepoimentoModerado`
+--
+ALTER TABLE `DepoimentoModerado`
+  ADD CONSTRAINT `DepoimentoModerado_ibfk_1` FOREIGN KEY (`IdAlteradoPor`) REFERENCES `Usuario` (`Id`) ON UPDATE CASCADE;
 
 --
 -- Estrutura da tabela `Pessoa`
@@ -193,20 +266,6 @@ INSERT INTO `__EFMigrationsHistory` (`MigrationId`, `ProductVersion`) VALUES
 
 --
 -- Indexes for dumped tables
---
-
---
--- Indexes for table `Mensagem`
---
-ALTER TABLE `Mensagem`
-  ADD PRIMARY KEY (`Id`);
-
---
--- Indexes for table `MensagemModerada`
---
-ALTER TABLE `MensagemModerada`
-  ADD PRIMARY KEY (`Id`),
-  ADD KEY `MensagemModerada_ibfk_1` (`IdAlteradoPor`);
 
 --
 -- Indexes for table `Pessoa`
@@ -238,15 +297,7 @@ ALTER TABLE `Usuario`
 ALTER TABLE `Vitima`
   ADD PRIMARY KEY (`Id`);
 
---
-ALTER TABLE `Mensagem`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
 
---
--- AUTO_INCREMENT for table `MensagemModerada`
---
-ALTER TABLE `MensagemModerada`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `Pessoa`
@@ -278,16 +329,6 @@ ALTER TABLE `Usuario`
 ALTER TABLE `Vitima`
   MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
 
---
--- Constraints for dumped tables
---
-
---
--- Limitadores para a tabela `MensagemModerada`
---
-ALTER TABLE `MensagemModerada`
-  ADD CONSTRAINT `MensagemModerada_ibfk_1` FOREIGN KEY (`IdAlteradoPor`) REFERENCES `Usuario` (`Id`) ON UPDATE CASCADE;
-COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
