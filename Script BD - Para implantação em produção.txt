@@ -36,7 +36,7 @@ CREATE TABLE `Depoimento` (
   `Profissao` longtext CHARACTER SET utf8mb4,
   `Email` longtext CHARACTER SET utf8mb4,
   `Sentimento` varchar(255) COLLATE latin1_general_ci DEFAULT NULL,
-  `Privacidade` int(11) DEFAULT NULL,
+  `Privacidade` varchar(255) COLLATE latin1_general_ci DEFAULT NULL,
   `PoliticaPrivacidade` tinyint(1) DEFAULT NULL,
   `Fotografia` longblob,
   `Texto` mediumtext COLLATE latin1_general_ci NOT NULL,
