@@ -29,91 +29,141 @@ namespace Condolencia.Controllers
         [HttpGet("status")]
         public async Task<ActionResult<List<MensagemRegistrar>>> GetMensagemByStatus(string status)
         {
-            var result = await _mensagemService.GetMensagemByStatus(status);
-
-            if (result == null)
+            try
             {
-                return NotFound();
-            }
+                var result = await _mensagemService.GetMensagemByStatus(status);
 
-            return result;
+                if (result == null)
+                {
+                    return NotFound(new { Mensagem = "Nenhuma condolência encontrada." });
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Mensagem = ex.Message });
+            }
         }
 
         [HttpGet("QRcode")]
         public async Task<ActionResult<List<MensagemRegistrar>>> GetQrCode()
         {
-            var result = await _mensagemService.GetQrCode();
-
-            if (result == null)
+            try
             {
-                return NotFound();
-            }
+                var result = await _mensagemService.GetQrCode();
 
-            return result;
+                if (result == null)
+                {
+                    return NotFound(new { Mensagem = "Nenhuma condolência encontrada." });
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Mensagem = ex.Message });
+            }
         }
 
         [HttpGet("id")]
         [Produces("application/json")]
         public async Task<ActionResult<MensagemRegistrar>> GetMensagem(int id)
         {
-            var mensagem = await _mensagemService.GetMensagem(id);
-
-            if (mensagem == null)
+            try
             {
-                return NotFound();
+                var mensagem = await _mensagemService.GetMensagem(id);
+
+                if (mensagem == null)
+                {
+                    return NotFound(new { Mensagem = "Nenhuma condolência encontrada." });
+                }
+
+                return mensagem;
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Mensagem = ex.Message });
             }
 
-            return mensagem;
         }
 
         [HttpPut("id")]
         [Produces("application/json")]
         public async Task<ActionResult<MensagemRegistrar>> PutMensagem(int id, [FromBody] MensagemModeradaViewModel mensagemModerada)
         {
-            if (id == 0 || id < 0)
+            try
             {
-                return BadRequest();
+                if (id == 0 || id < 0)
+                {
+                    return BadRequest(new { Mensagem = "Id informado não é válido." });
+                }
+
+                mensagemModerada.IdMensagem = id;
+                var result = await _mensagemService.AlterarStatus(mensagemModerada);
+
+                return result;
             }
-
-            mensagemModerada.IdMensagem = id;
-            var result = await _mensagemService.AlterarStatus(mensagemModerada);
-
-            return result;
+            catch (Exception ex)
+            {
+                return BadRequest(new { Mensagem = ex.Message });
+            }
         }
-
 
         [HttpPost]
         [Produces("application/json")]
         public async Task<ActionResult<MensagemRegistrar>> PostMensagem([FromBody] MensagemRegistrar publicarMensagem)
         {
-            var result = await _mensagemService.RegistrarMensagem(publicarMensagem);
+            try
+            {
+                var result = await _mensagemService.RegistrarMensagem(publicarMensagem);
 
-            return result;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Mensagem = ex.Message });
+            }
         }
 
         [HttpGet]
         [Produces("application/json")]
         public async Task<ActionResult<List<MensagemRegistrar>>> GetMensagens()
         {
-            var result = await _mensagemService.GetAllMensagens();
+            try
+            {
+                var result = await _mensagemService.GetAllMensagens();
 
-            return result;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Mensagem = ex.Message });
+            }
         }
 
         // DELETE: api/Mensagems/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMensagem(int id)
         {
-            var mensagem = await _context.Mensagem.FindAsync(id);
-            if (mensagem == null)
+            try
             {
-                return NotFound();
+                var mensagem = await _context.Mensagem.FindAsync(id);
+                if (mensagem == null)
+                {
+                    return NotFound();
+                }
+
+                _context.Mensagem.Remove(mensagem);
+                await _context.SaveChangesAsync();
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Mensagem = ex.Message });
             }
 
-            _context.Mensagem.Remove(mensagem);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
         }
 
         private bool MensagemExists(int id)

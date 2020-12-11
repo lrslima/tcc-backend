@@ -40,7 +40,7 @@ namespace Condolencia.Controllers
 
             if (vitima == null)
             {
-                return NotFound();
+                return NotFound(new { Mensagem = "Vítima inexistente ou inválida." });
             }
 
             return vitima;
@@ -62,16 +62,9 @@ namespace Condolencia.Controllers
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException ex)
             {
-                if (!VitimaExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return NotFound(new { Mensagem = ex.Message });
             }
 
             return NoContent();
@@ -89,29 +82,22 @@ namespace Condolencia.Controllers
                 // Fazer validações
                 await _vitimaContext.CadastrarVitima(vitimaViewModel);
 
-                if (vitimaViewModel.codigoErro == 0)
-                {
-                    vitima.Nome = vitimaViewModel.nome;
-                    vitima.SobreNome = vitimaViewModel.sobrenome;
-                    vitima.CPF = vitimaViewModel.cpf.Trim();
-                    vitima.RG = vitimaViewModel.rg.Trim();
-                    vitima.Rua = vitimaViewModel.endereco_rua;
-                    vitima.Cidade = vitimaViewModel.endereco_cidade;
-                    vitima.Estado = vitimaViewModel.endereco_estado;
-                    vitima.Fotografia = vitimaViewModel.imagem;
-                    _context.Vitima.Add(vitima);
-                    await _context.SaveChangesAsync();
+                vitima.Nome = vitimaViewModel.nome;
+                vitima.SobreNome = vitimaViewModel.sobrenome;
+                vitima.CPF = vitimaViewModel.cpf.Trim();
+                vitima.RG = vitimaViewModel.rg.Trim();
+                vitima.Rua = vitimaViewModel.endereco_rua;
+                vitima.Cidade = vitimaViewModel.endereco_cidade;
+                vitima.Estado = vitimaViewModel.endereco_estado;
+                vitima.Fotografia = vitimaViewModel.imagem;
+                _context.Vitima.Add(vitima);
+                await _context.SaveChangesAsync();
 
-                    return CreatedAtAction("GetVitima", new { id = vitima.Id }, vitima);
-                }
-                else
-                {
-                    return await Task.FromResult(vitimaViewModel);
-                }
+                return CreatedAtAction("GetVitima", new { id = vitima.Id }, vitima);
             }
             catch (Exception ex)
             {
-                return await Task.FromException<VitimaViewModel>(ex);
+                return NotFound(new { Mensagem = ex.Message });
             }
         }
 

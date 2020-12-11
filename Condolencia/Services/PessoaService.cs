@@ -24,10 +24,7 @@ namespace Condolencia.Services
             {
                 if ((String.IsNullOrEmpty(pessoaViewModel.cpf.Trim())) && (String.IsNullOrEmpty(pessoaViewModel.rg.Trim())))
                 {
-                    pessoaViewModel.codigoErro = 1;
-                    pessoaViewModel.mensagemErro = "CPF ou RG do homenageante é obrigatório";
-                    return await Task.FromResult(pessoaViewModel);
-                    //throw new Exception("CPF ou RG do homenageante é obrigatório");
+                    throw new Exception("CPF ou RG do homenageante é obrigatório");
                 }
 
                 // CPF caso informado será validado
@@ -35,10 +32,7 @@ namespace Condolencia.Services
                 {
                     if (!Validacao.ValidaCPF.IsCpf(pessoaViewModel.cpf.Trim()))
                     {
-                        pessoaViewModel.codigoErro = 2;
-                        pessoaViewModel.mensagemErro = "CPF do homenageante informado é inválido";
-                        return await Task.FromResult(pessoaViewModel);
-                        //throw new Exception("CPF do homenageante informado é inválido");
+                        throw new Exception("CPF do homenageante informado é inválido");
                     }
                 }
 
@@ -47,10 +41,7 @@ namespace Condolencia.Services
                 //{
                 //    if (!Validacao.ValidaRG.IsRg(pessoaViewModel.rg.Trim()))
                 //    {
-                //        pessoaViewModel.codigoErro = 3;
-                //        pessoaViewModel.mensagemErro = "RG do homenageante informado é inválido";
-                //        return await Task.FromResult(pessoaViewModel);
-                //        //throw new Exception("RG do homenageante informado é inválido");
+                //        throw new Exception("RG do homenageante informado é inválido");
                 //    }
                 //}
 
@@ -59,10 +50,7 @@ namespace Condolencia.Services
                 {
                     if (!Validacao.ValidaEmail.IsEmail(pessoaViewModel.email.Trim()))
                     {
-                        pessoaViewModel.codigoErro = 4;
-                        pessoaViewModel.mensagemErro = "E-mail informado é inválido";
-                        return await Task.FromResult(pessoaViewModel);
-                        //throw new Exception("E-mail informado é inválido");
+                        throw new Exception("E-mail informado é inválido");
                     }
                 }
 

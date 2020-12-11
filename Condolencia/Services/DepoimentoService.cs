@@ -36,10 +36,7 @@ namespace Condolencia.Services
                 // Validações - CPF ou RG - Ao menos 1 é obrigatório
                 if ((String.IsNullOrEmpty(depoimentoViewModel.CPF.Trim())) && (String.IsNullOrEmpty(depoimentoViewModel.RG.Trim())))
                 {
-                    depoimentoViewModel.codigoErro = 1;
-                    depoimentoViewModel.mensagemErro = "CPF ou RG é obrigatório";
-                    return await Task.FromResult(depoimentoViewModel);
-                    //throw new Exception("CPF ou RG do homenageante é obrigatório");
+                    throw new Exception("CPF ou RG do homenageante é obrigatório");
                 }
 
                 // CPF caso informado será validado
@@ -47,10 +44,7 @@ namespace Condolencia.Services
                 {
                     if (!Validacao.ValidaCPF.IsCpf(depoimentoViewModel.CPF.Trim()))
                     {
-                        depoimentoViewModel.codigoErro = 2;
-                        depoimentoViewModel.mensagemErro = "CPF informado é inválido";
-                        return await Task.FromResult(depoimentoViewModel);
-                        //throw new Exception("CPF do homenageante informado é inválido");
+                        throw new Exception("CPF do homenageante informado é inválido");
                     }
                 }
 
@@ -59,10 +53,7 @@ namespace Condolencia.Services
                 {
                     if (!Validacao.ValidaRG.IsRg(depoimentoViewModel.RG.Trim()))
                     {
-                        depoimentoViewModel.codigoErro = 3;
-                        depoimentoViewModel.mensagemErro = "RG informado é inválido";
-                        return await Task.FromResult(depoimentoViewModel);
-                        //throw new Exception("RG do homenageante informado é inválido");
+                        throw new Exception("RG do homenageante informado é inválido");
                     }
                 }
 
@@ -71,10 +62,7 @@ namespace Condolencia.Services
                 {
                     if (!Validacao.ValidaEmail.IsEmail(depoimentoViewModel.Email.Trim()))
                     {
-                        depoimentoViewModel.codigoErro = 4;
-                        depoimentoViewModel.mensagemErro = "E-mail informado é inválido";
-                        return await Task.FromResult(depoimentoViewModel);
-                        //throw new Exception("E-mail informado é inválido");
+                        throw new Exception("E-mail informado é inválido");
                     }
                 }
 
@@ -169,7 +157,7 @@ namespace Condolencia.Services
             }
             catch (Exception ex)
             {
-                throw ex;
+                return await Task.FromException<DepoimentoRegistrar>(ex);
             }
 
         }
@@ -334,7 +322,7 @@ namespace Condolencia.Services
             }
             catch (Exception ex)
             {
-                throw ex;
+                return await Task.FromException<DepoimentoRegistrar>(ex);
             }
         }
 
@@ -369,7 +357,7 @@ namespace Condolencia.Services
             }
             catch (Exception ex)
             {
-                throw ex;
+                return await Task.FromException<List<DepoimentoRegistrar>>(ex);
             }
         }
 
@@ -404,7 +392,7 @@ namespace Condolencia.Services
             }
             catch (Exception ex)
             {
-                throw ex;
+                return await Task.FromException<DepoimentoRegistrar>(ex);
             }
         }
 
@@ -439,7 +427,7 @@ namespace Condolencia.Services
             }
             catch (Exception ex)
             {
-                throw ex;
+                return await Task.FromException<List<DepoimentoRegistrar>> (ex);
             }
         }
 
@@ -460,7 +448,7 @@ namespace Condolencia.Services
             }
             catch (Exception ex)
             {
-                throw ex;
+                return await Task.FromException<List<DepoimentoRegistrar>> (ex);
             }
         }
     }

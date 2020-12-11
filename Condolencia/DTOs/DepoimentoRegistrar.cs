@@ -38,7 +38,7 @@ namespace Condolencia.DTOs
                 return Nome + " " + SobreNome;
             }
         }
-        public int codigoErro { get; set; }
-        public string mensagemErro { get; set; }
+        //public int codigoErro { get; set; }
+        //public string mensagemErro { get; set; }
     }
 }

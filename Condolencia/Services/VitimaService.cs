@@ -27,10 +27,7 @@ namespace Condolencia.Services
                 {
                     if (!Validacao.ValidaCPF.IsCpf(vitimaViewModel.cpf.Trim()))
                     {
-                        vitimaViewModel.codigoErro = 1;
-                        vitimaViewModel.mensagemErro = "CPF da vítima informado é inválido";
-                        return await Task.FromResult(vitimaViewModel);
-                        //throw new Exception("CPF da vítima informado é inválido");
+                        throw new Exception("CPF da vítima informado é inválido");
                     }
                 }
 

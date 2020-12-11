@@ -29,56 +29,84 @@ namespace Condolencia.Controllers
         [HttpGet("status")]
         public async Task<ActionResult<List<DepoimentoRegistrar>>> GetDepoimentoByStatus(string status)
         {
-            var result = await _depoimentoService.GetDepoimentoByStatus(status);
-
-            if (result == null)
+            try
             {
-                return NotFound();
-            }
+                var result = await _depoimentoService.GetDepoimentoByStatus(status);
 
-            return result;
+                if (result == null)
+                {
+                    return NotFound(new { Mensagem = "Nenhum depoimento encontrado." });
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Mensagem = ex.Message });
+            }
         }
 
         [HttpGet("QRcode")]
         public async Task<ActionResult<List<DepoimentoRegistrar>>> GetQrCode()
         {
-            var result = await _depoimentoService.GetQrCode();
-
-            if (result == null)
+            try
             {
-                return NotFound();
-            }
+                var result = await _depoimentoService.GetQrCode();
 
-            return result;
+                if (result == null)
+                {
+                    return NotFound(new { Mensagem = "Nenhum depoimento encontrado" });
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Mensagem = ex.Message });
+            }
         }
 
         [HttpGet("id")]
         [Produces("application/json")]
         public async Task<ActionResult<DepoimentoRegistrar>> GetDepoimento(int id)
         {
-            var depoimento = await _depoimentoService.GetDepoimento(id);
-
-            if (depoimento == null)
+            try
             {
-                return NotFound();
-            }
+                var depoimento = await _depoimentoService.GetDepoimento(id);
 
-            return depoimento;
+                if (depoimento == null)
+                {
+                    return NotFound(new { Mensagem = "Nenhum depoimento encontrado." });
+                }
+
+                return depoimento;
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Mensagem = ex.Message });
+            }
         }
 
         [HttpPut("id")]
         [Produces("application/json")]
         public async Task<ActionResult<DepoimentoRegistrar>> PutDepoimento(int id, [FromBody] DepoimentoModeradoViewModel depoimentoModerado)
         {
-            if (id == 0 || id < 0)
+            try
             {
-                return BadRequest();
+                if (id == 0 || id < 0)
+                {
+                    return BadRequest(new { Mensagem = "Id informado não é válido." });
+                }
+
+                depoimentoModerado.IdDepoimento = id;
+                var result = await _depoimentoService.AlterarStatus(depoimentoModerado);
+
+                return result;
             }
-
-            depoimentoModerado.IdDepoimento = id;
-            var result = await _depoimentoService.AlterarStatus(depoimentoModerado);
-
-            return result;
+            catch (Exception ex)
+            {
+                return BadRequest(new { Mensagem = ex.Message });
+            }
         }
 
 
@@ -86,34 +114,55 @@ namespace Condolencia.Controllers
         [Produces("application/json")]
         public async Task<ActionResult<DepoimentoRegistrar>> PostDepoimento([FromBody] DepoimentoRegistrar publicarDepoimento)
         {
-            var result = await _depoimentoService.RegistrarDepoimento(publicarDepoimento);
+            try
+            {
+                var result = await _depoimentoService.RegistrarDepoimento(publicarDepoimento);
 
-            return result;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Mensagem = ex.Message });
+            }
         }
 
         [HttpGet]
         [Produces("application/json")]
         public async Task<ActionResult<List<DepoimentoRegistrar>>> GetMensagens()
         {
-            var result = await _depoimentoService.GetAllDepoimentos();
+            try
+            {
+                var result = await _depoimentoService.GetAllDepoimentos();
 
-            return result;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Mensagem = ex.Message });
+            }
         }
 
         // DELETE: api/Depoimentos/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteDepoimento(int id)
         {
-            var depoimento = await _context.Depoimento.FindAsync(id);
-            if (depoimento == null)
+            try
             {
-                return NotFound();
+                var depoimento = await _context.Depoimento.FindAsync(id);
+                if (depoimento == null)
+                {
+                    return NotFound();
+                }
+
+                _context.Depoimento.Remove(depoimento);
+                await _context.SaveChangesAsync();
+
+                return NoContent();
             }
-
-            _context.Depoimento.Remove(depoimento);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            catch (Exception ex)
+            {
+                return BadRequest(new { Mensagem = ex.Message });
+            }
         }
 
         private bool DepoimentoExists(int id)

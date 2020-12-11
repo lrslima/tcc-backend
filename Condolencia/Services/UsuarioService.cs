@@ -47,13 +47,12 @@ namespace Condolencia.Services
                 }
                 else
                 {
-                    return Task.FromResult(false);
+                    throw new Exception("Já existe usuário cadastrado com o e-mail informado");
                 }
-
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return Task.FromResult(false);
+                return Task.FromException<bool>(ex);
             }
         }
 

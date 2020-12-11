@@ -41,19 +41,9 @@ namespace Condolencia.Services
             {
                 // Inclusão da Pessoa que está registrando a condolência
                 await _pessoaService.CadastrarPessoa(mensagemViewModel.Pessoa);
-                if (mensagemViewModel.Pessoa.codigoErro > 0)
-                {
-                    // Retornar dados inconsistentes
-                    return await Task.FromResult(mensagemViewModel);
-                }
 
                 // Inclusão da Vítima que está sendo homenageada
                 await _vitimaService.CadastrarVitima(mensagemViewModel.Vitima);
-                if (mensagemViewModel.Vitima.codigoErro > 0)
-                {
-                    // Retornar dados inconsistentes
-                    return await Task.FromResult(mensagemViewModel);
-                }
 
                 // Inclusão da mensagem
                 Mensagem mensagem = new Mensagem();
@@ -159,9 +149,8 @@ namespace Condolencia.Services
             }
             catch (Exception ex)
             {
-                throw ex;
+                return await Task.FromException<MensagemRegistrar>(ex);
             }
-
         }
 
         public async Task<MensagemRegistrar> AlterarStatus(MensagemModeradaViewModel mensagemModeradaViewModel)
@@ -217,6 +206,7 @@ namespace Condolencia.Services
                     htmlString = htmlString + @"                        </tr>" + Environment.NewLine;
                     htmlString = htmlString + @"                        <tr>" + Environment.NewLine;
                     htmlString = htmlString + @"                            <td align = 'center' valign = 'top' style = 'padding: 50px;'>" + Environment.NewLine;
+                    htmlString = htmlString + @"                                <p><br><img src= 'https://www.opememorial.net/api/QRCode/IdCondolencia?idCondolencia=" + mensagemModeradaViewModel.IdMensagem + @"' class='CToWUd a6T' tabindex='0'/></br></p>" + Environment.NewLine;
                     htmlString = htmlString + @"                                <p style = 'font-size: 15px; line-height: 20px; padding-bottom: 35px; margin: 0;'>Sua condol&ecirc;ncia foi aprovada e publicada. </br>Para acessar, clique no link abaixo:</p>" + Environment.NewLine;
                     htmlString = htmlString + @"                                <a href='https://avarc.vercel.app/condolencia/" + mensagemModeradaViewModel.IdMensagem + @"' target = '_blank' style = 'color: #474cdc; font-size: 14px;'> Link da Condol&ecirc;ncia</a>" + Environment.NewLine;
                     htmlString = htmlString + @"                            </td>" + Environment.NewLine;
@@ -326,7 +316,7 @@ namespace Condolencia.Services
             }
             catch (Exception ex)
             {
-                throw ex;
+                return await Task.FromException<MensagemRegistrar>(ex);
             }
         }
 
@@ -373,7 +363,7 @@ namespace Condolencia.Services
             }
             catch (Exception ex)
             {
-                throw ex;
+                return await Task.FromException<List<MensagemRegistrar>>(ex);
             }
         }
 
@@ -420,7 +410,7 @@ namespace Condolencia.Services
             }
             catch (Exception ex)
             {
-                throw ex;
+                return await Task.FromException<MensagemRegistrar>(ex);
             }
         }
 
@@ -466,7 +456,7 @@ namespace Condolencia.Services
             }
             catch (Exception ex)
             {
-                throw ex;
+                return await Task.FromException<List<MensagemRegistrar>>(ex);
             }
         }
 
@@ -487,7 +477,7 @@ namespace Condolencia.Services
             }
             catch (Exception ex)
             {
-                throw ex;
+                return await Task.FromException<List<MensagemRegistrar>>(ex);
             }
         }
     }

@@ -82,44 +82,72 @@ namespace Condolencia.Controllers
         [HttpPost]
         public async Task<ActionResult<UsuarioViewModel>> PostUsuario(UsuarioViewModelLogin usuarioViewModel)
         {
-            var retorno = await _usuarioService.GetUsuariosLoginAsync(usuarioViewModel.Email, usuarioViewModel.Senha);
-            
-            return retorno;
+            try
+            {
+                var retorno = await _usuarioService.GetUsuariosLoginAsync(usuarioViewModel.Email, usuarioViewModel.Senha);
+
+                return retorno;
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Mensagem = ex.Message });
+            }
         }
 
         [HttpPost]
         [Route("cadastrar")]
         public async Task<ActionResult<bool>> CadastrarModerador(UsuarioViewModel usuarioViewModel)
         {
-            var retorno = await _usuarioService.CadastrarModerador(usuarioViewModel);
+            try
+            {
+                var retorno = await _usuarioService.CadastrarModerador(usuarioViewModel);
 
-            return retorno;
+                return retorno;
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Mensagem = ex.Message });
+            }
         }
 
         [HttpGet]
         [Produces("application/json")]
         [Route("moderadores")]
-        public async Task<ActionResult<List<Usuario>>> ListaModeradores( )
+        public async Task<ActionResult<List<Usuario>>> ListaModeradores()
         {
-            var retorno = await _usuarioService.ListaModeradores();
+            try
+            {
+                var retorno = await _usuarioService.ListaModeradores();
 
-            return retorno;
+                return retorno;
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Mensagem = ex.Message });
+            }
         }
 
         // DELETE: api/Usuarios/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUsuario(int id)
         {
-            var usuario = await _context.Usuario.FindAsync(id);
-            if (usuario == null)
+            try
             {
-                return NotFound();
+                var usuario = await _context.Usuario.FindAsync(id);
+                if (usuario == null)
+                {
+                    return NotFound();
+                }
+
+                _context.Usuario.Remove(usuario);
+                await _context.SaveChangesAsync();
+
+                return NoContent();
             }
-
-            _context.Usuario.Remove(usuario);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            catch (Exception ex)
+            {
+                return BadRequest(new { Mensagem = ex.Message });
+            }
         }
 
         private bool UsuarioExists(int id)

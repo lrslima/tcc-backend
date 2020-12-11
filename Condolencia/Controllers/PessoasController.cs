@@ -40,7 +40,7 @@ namespace Condolencia.Controllers
 
             if (pessoa == null)
             {
-                return NotFound();
+                return NotFound(new { Mensagem = "Pessoa inexistente ou inválida." });
             }
 
             return pessoa;
@@ -62,16 +62,9 @@ namespace Condolencia.Controllers
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException ex)
             {
-                if (!PessoaExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return BadRequest(new { Mensagem = ex.Message });
             }
 
             return NoContent();
@@ -88,31 +81,22 @@ namespace Condolencia.Controllers
             {
                 // Fazer validações
                 await _pessoaService.CadastrarPessoa(pessoaViewModel);
-                
-                if (pessoaViewModel.codigoErro == 0)
-                {
-                    // Salvar inclusão de Pessoa
-                    pessoa.Nome = pessoaViewModel.nome;
-                    pessoa.SobreNome = pessoaViewModel.sobrenome;
-                    pessoa.CPF = pessoaViewModel.cpf.Trim();
-                    pessoa.RG = pessoaViewModel.rg.Trim();
-                    pessoa.Email = pessoaViewModel.email;
-                    _context.Pessoa.Add(pessoa);
-                    await _context.SaveChangesAsync();
-                    return CreatedAtAction("GetPessoa", new { id = pessoa.Id }, pessoa);
-                }
-                else
-                {
-                    // Retornar dados inconsistentes
-                    return await Task.FromResult(pessoaViewModel);
-                }
 
+                // Salvar inclusão de Pessoa
+                pessoa.Nome = pessoaViewModel.nome;
+                pessoa.SobreNome = pessoaViewModel.sobrenome;
+                pessoa.CPF = pessoaViewModel.cpf.Trim();
+                pessoa.RG = pessoaViewModel.rg.Trim();
+                pessoa.Email = pessoaViewModel.email;
+                _context.Pessoa.Add(pessoa);
+                await _context.SaveChangesAsync();
+                return CreatedAtAction("GetPessoa", new { id = pessoa.Id }, pessoa);
             }
             catch (Exception ex)
             {
-                return await Task.FromException<PessoaViewModel>(ex);
+                //return await Task.FromException<PessoaViewModel>(ex);
+                return BadRequest(new { Mensagem = ex.Message });
             }
-
         }
 
         // DELETE: api/Pessoas/5
